@@ -3,7 +3,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SIGC++_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 
-set(DSPSRCDIR ../../src)
+set(DSPSRCDIR ../ext-dspboard/src)
 
 include_directories(${DSPSRCDIR})
 

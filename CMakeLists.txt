@@ -19,6 +19,8 @@ pkg_check_modules(SOMADEPS REQUIRED
 ENABLE_TESTING()
 
 include_directories(.)
+include_directories(ext-dspboard/src)
+
 
 add_subdirectory(somadspio)
 add_subdirectory(tests)
