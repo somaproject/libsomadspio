@@ -1,0 +1,3 @@
+[submodule "ext-dspboard"]
+	path = ext-dspboard
+	url = git://github.com/somaproject/dspboard.git
