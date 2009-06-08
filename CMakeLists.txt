@@ -27,6 +27,12 @@ include_directories(.)
 include_directories(ext-dspboard/src)
 
 
+link_directories(
+  ${Boost_LIBRARY_DIRS}
+  ${SOMADEPS_LIBRARY_DIRS}
+)
+
+
 add_subdirectory(somadspio)
 add_subdirectory(tests)
 

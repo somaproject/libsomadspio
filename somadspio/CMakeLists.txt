@@ -11,6 +11,12 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SIGC++_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 
+
+link_directories(
+  ${Boost_LIBRARY_DIRS}
+  ${SOMADEPS_LIBRARY_DIRS}
+)
+
 ADD_LIBRARY(${PROJECT_NAME} SHARED
   ${dspiolib_SRCS})
 

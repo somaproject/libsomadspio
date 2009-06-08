@@ -7,6 +7,10 @@ set(DSPSRCDIR ../ext-dspboard/src)
 
 include_directories(${DSPSRCDIR})
 
+link_directories(
+  ${Boost_LIBRARY_DIRS}
+  ${SOMADEPS_LIBRARY_DIRS}
+)
 
 add_executable(test_simple
   test_simple.cc
