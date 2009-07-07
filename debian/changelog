@@ -1,5 +1,5 @@
-libsomadspio0 (0.9~soma-ubuntu1) jaunty; urgency=low
+libsomadspio0 (0.9~soma-ubuntu2) jaunty; urgency=low
 
-  * Initial buildo of libsomadespio
+  * Second build of libsomadespio
 
  -- Stuart Layton <slayton@mit.edu>  Fri, 05 Jun 2009 16:53:46 -0400
