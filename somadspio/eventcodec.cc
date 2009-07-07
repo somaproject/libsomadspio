@@ -60,7 +60,7 @@ EventTX_t queryGain(int chan)
   EventTX_t etx;
   etx.event.cmd = QUERY;
   etx.event.data[0] = CHANGAIN;
-  etx.event.data[1] = 0x01 << chan; 
+  etx.event.data[1] = chan; 
 
   return etx; 
 }
@@ -90,7 +90,7 @@ EventTX_t queryHPF( int chan)
   EventTX_t etx;
   etx.event.cmd = QUERY;
   etx.event.data[0] = CHANHPF;
-  etx.event.data[1] = 0x01 <<  chan; 
+  etx.event.data[1] =  chan; 
   return etx; 
   
 
@@ -108,7 +108,6 @@ EventTX_t chanSel(int chan)
 
 int chanSel(const Event_t & event )
 {
-  std::cout << "EventCodec chansel event " << event.data[1] << std::endl;
   return event.data[1]; 
 }
 

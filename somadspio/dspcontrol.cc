@@ -91,7 +91,15 @@ namespace dspiolib {
   }
   
   void AcqDataSource::parseEvent(const Event_t & event) {
-    
+//     std::cout << " Parsing event: "; 
+//     std::cout << "cmd = " << (int)event.cmd 
+// 	      << " src = " << (int)event.src << " ";
+//     for (int i = 0; i < 5; i++) {
+//       std::cout << event.data[i] << " "; 
+//     }
+//     std::cout << std::endl; 
+	      
+      
     ads::PARAMETERS p = ads::whichParam(event); 
     switch(p) {
     case ads::LINKSTATUS: 
@@ -117,6 +125,7 @@ namespace dspiolib {
     case ads::CHANGAIN:
       {
 	ads::changain_t gain = ads::changeGain(event); 
+	//std::cout << "gain.first = " << (int)gain.first << std::endl; 
 	if (gain.first > CHANCNT) {
 	  throw std::runtime_error("received channel gain event with incorrect channel"); 
 	}

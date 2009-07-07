@@ -66,3 +66,12 @@ foreach(testname ${testlist})
 endforeach(testname)
 
 
+add_executable(runtest
+  runtest.cc
+)
+
+target_link_libraries(runtest
+  ${PROJECT_NAME}_test
+
+  somanetwork)
+
