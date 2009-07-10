@@ -13,6 +13,7 @@ namespace somadspio {
   AcqDataSource::AcqDataSource(StateProxy & parent) :
     parent_(parent)
   {
+
     // initialize to sane values
     linkStatus_ = false; 
     mode_  = 0; 
@@ -69,15 +70,7 @@ namespace somadspio {
   }
   
   void AcqDataSource::parseEvent(const sn::Event_t & event) {
-//     std::cout << " Parsing event: "; 
-//     std::cout << "cmd = " << (int)event.cmd 
-// 	      << " src = " << (int)event.src << " ";
-//     for (int i = 0; i < 5; i++) {
-//       std::cout << event.data[i] << " "; 
-//     }
-//     std::cout << std::endl; 
-	      
-      
+
     ads::PARAMETERS p = ads::whichParam(event); 
     switch(p) {
     case ads::LINKSTATUS: 
@@ -103,7 +96,6 @@ namespace somadspio {
     case ads::CHANGAIN:
       {
 	ads::changain_t gain = ads::changeGain(event); 
-	//std::cout << "gain.first = " << (int)gain.first << std::endl; 
 	if (gain.first > CHANCNT) {
 	  throw std::runtime_error("received channel gain event with incorrect channel"); 
 	}
@@ -204,8 +196,7 @@ namespace somadspio {
     cg.second = gain; 
     sn::EventTX_t etx = ads::changeGain(cg); 
     parent_.setETXDest(etx); 
-    //parent_.queueChange(events, (this->getGain(chan) == gain)) 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx),  ref(gains_[chan]) == gain); 
 
   }
 
@@ -228,7 +219,7 @@ namespace somadspio {
 
     sn::EventTX_t etx = ads::changeHPF(hpf); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), ref(hpfens_[chan]) == bval); 
 
   }
 

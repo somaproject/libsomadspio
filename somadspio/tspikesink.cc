@@ -71,7 +71,7 @@ namespace somadspio {
     ct.second = thold; 
     sn::EventTX_t etx = tspike::changeThreshold(ct); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), ref(tholds_[chan]) == thold); 
 
   }
 
@@ -92,7 +92,7 @@ namespace somadspio {
     cfid.second = filterID; 
     sn::EventTX_t etx = tspike::changeFilterID(cfid); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), ref(filterids_[chan]) == filterID); 
 
   }
 

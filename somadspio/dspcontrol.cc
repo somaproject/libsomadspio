@@ -8,13 +8,12 @@ namespace somadspio {
   StateProxy::StateProxy(datasource_t dsrc, eventtxlist_sender_t etgt) :
     dsrc_(dsrc), 
     src_(dsrc + 0x08),
+    eventTX_(etgt), 
+    preddisp_(etgt),
     acqdatasrc(*this), 
     tspikesink(*this), 
-    wavesink(*this), 
-    eventTX_(etgt), 
-    preddisp_(etgt)
+    wavesink(*this)
   {
-    std::cout << "Init done" << std::endl; 
   }
 
   void StateProxy::newEvent(const Event_t & event) {

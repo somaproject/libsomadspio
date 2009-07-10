@@ -69,17 +69,17 @@ BOOST_AUTO_TEST_CASE(gainset_test_fast)
   
   int gains[] = {0, 100, 200, 500, 1000, 2000, 5000, 10000}; 
   // now try setting the gain 
-  for (int i = 0; i < 7; i++) {
-    stateproxy.acqdatasrc.setGain(0, gains[i]); 
+  for (int i = 0; i < 5; i++) {
+    stateproxy.acqdatasrc.setGain(i, gains[i]); 
     dspboard_run(dspboard, 10); 
   } 
 
   dspboard_run(dspboard, 100000); 
-  for (int i = 0; i < 7; i++) {
-    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(0), gains[i]); 
-    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).first, 
+  for (int i = 0; i < 5; i++) {
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(i), gains[i]); 
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i).first, 
 		      AcqState::RANGEMIN[i]); 
-    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).second, 
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i).second, 
 		      AcqState::RANGEMAX[i]); 
   }
   

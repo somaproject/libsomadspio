@@ -33,11 +33,6 @@ namespace somadspio {
     sn::datasource_t dsrc_;
     sn::eventsource_t src_; 
 
-
-    AcqDataSource acqdatasrc; 
-    TSpikeSink tspikesink; 
-    WaveSink wavesink; 
-
     
     void setETXDest(sn::EventTX_t &  etx); 
     void submit(const sn::EventTXList_t & el, boost::function<bool () > pred); 
@@ -45,6 +40,12 @@ namespace somadspio {
   private:
     const eventtxlist_sender_t eventTX_; 
     EventPredicateDispatch preddisp_; 
+  public:
+
+    AcqDataSource acqdatasrc; 
+    TSpikeSink tspikesink; 
+    WaveSink wavesink; 
+
 
   }; 
 

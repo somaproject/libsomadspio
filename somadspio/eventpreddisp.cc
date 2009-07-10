@@ -6,10 +6,9 @@ namespace somadspio {
 
 
   EventPredicateDispatch::EventPredicateDispatch( eventtxlist_sender_t   sender) :
-    //eventsender_(sender), 
+    eventsender_(sender), 
     ispending_(false)
   {
-    std::cout << "EPD init" << std::endl; 
 
   }
 
@@ -28,10 +27,15 @@ namespace somadspio {
   {
     if (ispending_) {
       if (queue_.front().second() ) {
+	std::cout << "Predicate is true" << std::endl; 
 	// predicate is true!
 	queue_.pop_front(); 	
 	ispending_ = false; 
 	return true; 
+      } else {
+	std::cout << "predicate not yet true "
+		  << queue_.size() << std::endl; 
+
       }
     } else { 
       if (!queue_.empty()) {

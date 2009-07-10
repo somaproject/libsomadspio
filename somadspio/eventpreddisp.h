@@ -7,7 +7,19 @@
 
 
 namespace somadspio {
-  
+  /*
+    Event predicate dispatch takes in a list of events to send
+    and a predicate, and only moves on to the -next- event in the 
+    queue once the predicate evaluates to true. 
+
+    We make use of some of the more functional boost:: components
+    to have nice declaration of predicates in the code. 
+
+    This lets us get around the problem of sending a bunch of commands
+    that all take a while to execute, and never hearing back. 
+
+
+   */
 
   class EventPredicateDispatch
   {
