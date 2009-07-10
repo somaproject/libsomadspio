@@ -46,10 +46,11 @@ public:
   RawMainLoop  * mainloop; 
 
   void runloop(); 
-  void sendEvents(const somanetwork::EventTX_t & etx); 
+  void sendEvents(const somanetwork::EventTXList_t & etxl); 
 
   std::list<dsp::EventTX_t> events; 
   sigc::slot<void, somanetwork::Event_t> eventcb_; 
+
 }; 
 
 #endif // MOCKDSPBOARD_H

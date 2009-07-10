@@ -3,7 +3,11 @@
 
 #include <sigc++/sigc++.h>
 #include <somanetwork/network.h>
-#include <somadspio/eventcodec.h>
+#include <somadspio/types.h>
+#include <somadspio/acqdatasource.h>
+#include <somadspio/tspikesink.h>
+#include <somadspio/wavesink.h>
+#include <somadspio/eventpreddisp.h> 
 
 /*
   caching of DSPboard state, event parsing and signal dispatch
@@ -18,142 +22,33 @@
 */ 
 
 
-namespace dspiolib {
-  namespace sn = somanetwork; 
-  class StateProxy; 
-  typedef std::pair<uint32_t, uint32_t> samprate_t;
-  typedef uint32_t filterid_t; 
-  typedef std::pair<int32_t, int32_t> range_t;
+namespace somadspio {
   
-  // basically a proxy for remote state
-  class AcqDataSource
-  {
-  public:
-    
-    sigc::signal<void, bool> & linkStatus(); 
-    bool getLinkStatus(); 
-    
-    sigc::signal<void, int> & mode(); 
-    int getMode(); 
-    void setMode(int); 
-    
-    sigc::signal<void, int, int> & gain(); 
-    void setGain(int chan, int gain); 
-    int getGain(int chan); 
-    
-    sigc::signal<void, int, bool> & hpfen(); 
-    bool getHPFen(int chan); 
-    void setHPFen(int chan, bool val); 
-    
-    sigc::signal<void, int, range_t> & range(); 
-    range_t getRange(int chan); 
-    // there is no setter for range
-    
-    sigc::signal<void, int> & chansel(); 
-    int getChanSel(); 
-    void setChanSel(int); 
-    
-    bool newEvent(const sn::Event_t & );
-    
-  private:
-    AcqDataSource(StateProxy & parent); 
-    
-    StateProxy & parent_; 
-    
-    static const int CHANCNT = 5; 
-    sigc::signal<void, bool> linkStatusSignal_; 
-    sigc::signal<void, int> modeSignal_; 
-    sigc::signal<void, int, int> gainSignal_; 
-    sigc::signal<void, int, bool> hpfenSignal_; 
-    sigc::signal<void, int>  chanselSignal_;
-    sigc::signal<void, int, range_t> rangeSignal_; 
-    
-    bool linkStatus_; 
-    int mode_; 
-    int gains_[CHANCNT]; 
-    bool hpfens_[CHANCNT]; 
-    range_t ranges_[CHANCNT]; 
-    int chansel_; 
-    
-    friend class StateProxy; 
-    void parseEvent(const sn::Event_t & event); 
-    
-  }; 
-  
-    class TSpikeSink
-    {
-    public:
-      static const int CHANN = 4; 
-      
-      sigc::signal<void, int, int> & thold(); 
-      void setThold(int chan, int thold); 
-      int getThold(int chan); 
-
-      sigc::signal<void, int, filterid_t> & filterID(); 
-      void setFilterID(int chan, filterid_t filterID); 
-      filterid_t getFilterID(int chan); 
-
-    private:
-      TSpikeSink(StateProxy & ); 
-
-      sigc::signal<void, int, int32_t> tholdSignal_; 
-      sigc::signal<void, int, uint32_t> filterIDSignal_; 
-      
-      friend class StateProxy; 
-      bool newEvent(const sn::Event_t & );
-      StateProxy & parent_;
-      int32_t tholds_[CHANN]; 
-      filterid_t filterids_[CHANN]; 
-      void parseEvent(const sn::Event_t & event); 
-
-    }; 
-    
-    class WaveSink
-    {
-    public:
-      sigc::signal<void, filterid_t> & filterID(); 
-      void setFilterID(filterid_t filterID); 
-      filterid_t getFilterID(); 
-      
-      sigc::signal<void, samprate_t > & sampratenum(); 
-      void setSampRateNum(int chan, samprate_t); 
-      samprate_t getSampRateNum(); 
-
-    private:
-      WaveSink(StateProxy & ); 
-      friend class StateProxy; 
-      bool newEvent(const sn::Event_t & );
-      StateProxy & parent_; 
-      
-      samprate_t samprate_; 
-      filterid_t filterid_; 
-      void parseEvent(const sn::Event_t & event); 
-
-    }; 
-    
-    
   class StateProxy {
   public:
-    StateProxy(sn::datasource_t dsrc, sigc::slot<void, const sn::EventTX_t &>  etgt); 
+    StateProxy(sn::datasource_t dsrc,  eventtxlist_sender_t  etgt); 
     
     void newEvent(const sn::Event_t & event); 
     
     sn::datasource_t dsrc_;
     sn::eventsource_t src_; 
 
-    const sigc::slot<void, const sn::EventTX_t & > eventTX_;
-    
+
     AcqDataSource acqdatasrc; 
     TSpikeSink tspikesink; 
     WaveSink wavesink; 
 
-
+    
     void setETXDest(sn::EventTX_t &  etx); 
+    void submit(const sn::EventTXList_t & el, boost::function<bool () > pred); 
 
   private:
+    const eventtxlist_sender_t eventTX_; 
+    EventPredicateDispatch preddisp_; 
 
   }; 
 
+  sn::EventTXList_t createList(const sn::EventTX_t & et); 
 
 
 }

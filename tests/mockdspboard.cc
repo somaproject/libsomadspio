@@ -39,33 +39,34 @@ void MockDSPBoard::setEventCallback(sigc::slot<void, somanetwork::Event_t> event
   eventcb_ = eventcb; 
 }
 
-void MockDSPBoard::sendEvents(const somanetwork::EventTX_t & etx)
+void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
 {
-
-  // convert from network EventTX to dsp EventTX
-  dsp::Event_t detx; 
-  detx.cmd = etx.event.cmd; 
-  detx.src = etx.event.src; 
-  for(int i = 0; i < 5; i++) {
-    detx.data[i]= etx.event.data[i]; 
+  for (somanetwork::EventTXList_t::const_iterator etx = etxl.begin(); 
+       etx != etxl.end(); ++etx) { 
+    // convert from network EventTX to dsp EventTX
+    dsp::Event_t detx; 
+    detx.cmd = etx->event.cmd; 
+    detx.src = etx->event.src; 
+    for(int i = 0; i < 5; i++) {
+      detx.data[i]= etx->event.data[i]; 
+    }
+    
+    // send the actual event to the mock DSP
+    std::vector<bool> amask, bmask, cmask, dmask; 
+    std::vector<dsp::Event_t> events; 
+    for (int i = 0; i < 80; i++) {
+      amask.push_back(false); 
+      bmask.push_back(false); 
+      cmask.push_back(false); 
+      dmask.push_back(false); 
+      events.push_back(dsp::Event_t()); 
+    }
+    amask[2] = true; 
+    events[2] = detx; 
+    uint16_t * buf = createEventBuffer(amask, bmask, cmask, dmask, events); 
+    ed.parseECycleBuffer(buf); 
+    //delete[] buf; fIXME WE SHOULD DELETE THESE AT SOME POINT
   }
-
-  // send the actual event to the mock DSP
-  std::vector<bool> amask, bmask, cmask, dmask; 
-  std::vector<dsp::Event_t> events; 
-  for (int i = 0; i < 80; i++) {
-    amask.push_back(false); 
-    bmask.push_back(false); 
-    cmask.push_back(false); 
-    dmask.push_back(false); 
-    events.push_back(dsp::Event_t()); 
-  }
-  amask[2] = true; 
-  events[2] = detx; 
-  uint16_t * buf = createEventBuffer(amask, bmask, cmask, dmask, events); 
-  ed.parseECycleBuffer(buf); 
-  //delete[] buf; fIXME WE SHOULD DELETE THESE AT SOME POINT
-
 }
 
 void MockDSPBoard::runloop()

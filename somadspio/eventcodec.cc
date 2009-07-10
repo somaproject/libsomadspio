@@ -1,7 +1,7 @@
 #include <somadspio/eventcodec.h>
 
 
-namespace dspiolib
+namespace somadspio
 { 
 namespace codec
 {

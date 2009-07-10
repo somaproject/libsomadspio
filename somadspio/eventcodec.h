@@ -11,7 +11,9 @@
 #include <somanetwork/eventtx.h>
 #include <somanetwork/network.h>
 
-namespace dspiolib {
+#include "somadspio/types.h"
+
+namespace somadspio {
   namespace codec { 
     namespace AcqDataSource
     {

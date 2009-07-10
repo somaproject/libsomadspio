@@ -1,7 +1,11 @@
 
 set(dspiolib_SRCS
   dspcontrol.cc
-  eventcodec.cc)
+  acqdatasource.cc
+  tspikesink.cc
+  wavesink.cc
+  eventcodec.cc
+  eventpreddisp.cc )
 
 set(somadspio_HEADERS
   dspcontrol.h eventcodec.h const.h

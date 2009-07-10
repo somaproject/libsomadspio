@@ -20,10 +20,10 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
   MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
-  dspiolib::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
+  somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						   &MockDSPBoard::sendEvents)); 
   dspboard.setEventCallback(sigc::mem_fun(stateproxy,
-					  &dspiolib::StateProxy::newEvent)); 
+					  &somadspio::StateProxy::newEvent)); 
   
   dspboard_run(dspboard, 10000); 
   
@@ -46,6 +46,45 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   
 }
 
+BOOST_AUTO_TEST_CASE(gainset_test_fast)
+{
+  /*
+    try setting the gain rapidly, and seeing if we get a result
+
+  */ 
+
+  MockDSPBoard dspboard(0, 8); 
+  dspboard.acqserial.linkUpState_ = true;
+  somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
+						   &MockDSPBoard::sendEvents)); 
+  dspboard.setEventCallback(sigc::mem_fun(stateproxy,
+					  &somadspio::StateProxy::newEvent)); 
+  
+  dspboard_run(dspboard, 10000); 
+  
+  // check if the link status update was correctly... uh, updated
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getLinkStatus(), true); 
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getMode(), 0); 
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(0), 0); 
+  
+  int gains[] = {0, 100, 200, 500, 1000, 2000, 5000, 10000}; 
+  // now try setting the gain 
+  for (int i = 0; i < 7; i++) {
+    stateproxy.acqdatasrc.setGain(0, gains[i]); 
+    dspboard_run(dspboard, 10); 
+  } 
+
+  dspboard_run(dspboard, 100000); 
+  for (int i = 0; i < 7; i++) {
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(0), gains[i]); 
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).first, 
+		      AcqState::RANGEMIN[i]); 
+    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).second, 
+		      AcqState::RANGEMAX[i]); 
+  }
+  
+}
+
 BOOST_AUTO_TEST_CASE(hpfset_test)
 {
   /*
@@ -55,10 +94,10 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
 
   MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
-  dspiolib::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
+  somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						   &MockDSPBoard::sendEvents)); 
   dspboard.setEventCallback(sigc::mem_fun(stateproxy,
-					  &dspiolib::StateProxy::newEvent)); 
+					  &somadspio::StateProxy::newEvent)); 
   
   dspboard_run(dspboard, 10000); 
   
@@ -86,10 +125,10 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
 
   MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
-  dspiolib::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
+  somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						   &MockDSPBoard::sendEvents)); 
   dspboard.setEventCallback(sigc::mem_fun(stateproxy,
-					  &dspiolib::StateProxy::newEvent)); 
+					  &somadspio::StateProxy::newEvent)); 
   
   dspboard_run(dspboard, 10000); 
   
