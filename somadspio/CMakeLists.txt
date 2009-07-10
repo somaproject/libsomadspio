@@ -9,7 +9,7 @@ set(dspiolib_SRCS
 
 set(somadspio_HEADERS
   dspcontrol.h eventcodec.h const.h types.h
-  acqdatasource.h tspikesink.h wavesink.h
+  acqdatasource.h tspikesink.h wavesink.h eventpreddisp.h
 )
 
 include_directories(${Boost_INCLUDE_DIRS})
