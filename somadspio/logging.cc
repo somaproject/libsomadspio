@@ -15,8 +15,9 @@ BOOST_DEFINE_LOG(somadspio_l, somadspio_finder::logger);
 
 namespace somadspio {
     
-  void init_logs()  {
-    
+  void init_logs( boost::logging::level::type level)  {
+    somadspio_log_level()->set_enabled(level); 
+
     somadspio_l()->writer().add_formatter(bl::formatter::high_precision_time("$mm.$ss:$micro ")); 
     somadspio_l()->writer().add_formatter(bl::formatter::append_newline()); 
     somadspio_l()->writer().add_destination( bl::destination::cout() );
