@@ -5,7 +5,7 @@
 namespace somadspio {
   using namespace somanetwork; 
   
-  StateProxy::StateProxy(datasource_t dsrc, eventtxlist_sender_t etgt) :
+  StateProxy::StateProxy(datasource_t dsrc, eventtxlist_sender_t etgt, uint64_t timeout) :
     dsrc_(dsrc), 
     src_(dsrc + 0x08),
     eventTX_(etgt), 
@@ -14,6 +14,13 @@ namespace somadspio {
     tspikesink(*this), 
     wavesink(*this)
   {
+    preddisp_.setTimeout(timeout); 
+  }
+
+  void StateProxy::setTime(uint64_t t)
+  {
+    preddisp_.setTime(t); 
+
   }
 
   void StateProxy::newEvent(const Event_t & event) {

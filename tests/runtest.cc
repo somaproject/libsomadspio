@@ -25,7 +25,7 @@ int main(int argc, char ** argv)
 
   // start running
   net->run(); 
-  somadspio::StateProxy sp(datasrc, &sendEvent ); 
+  somadspio::StateProxy sp(datasrc, &sendEvent, 0 ); 
   int pipe = net->getEventFifoPipe(); 
   while(1) {
     char x; 
