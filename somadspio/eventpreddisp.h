@@ -18,6 +18,16 @@ namespace somadspio {
     This lets us get around the problem of sending a bunch of commands
     that all take a while to execute, and never hearing back. 
 
+    Timeouts --------------------------------------
+    We also provide the ability for events to "time-out", which will
+    trigger an error message to be printed on the logs (FIXME add logging)
+
+    To facilitate TDD we have two methods:   
+       .setTimeout(uint64_t), time in arbitrary units
+       .setTime() // call to update time (push) 
+   
+   it's not clear if time should be a pull or a push-thing, it
+   feels like a lot of overhead to update the time all the time. 
 
    */
 
@@ -30,7 +40,9 @@ namespace somadspio {
     size_t queueSize(); 
     bool checkPred(); 
     void submit(const sn::EventTXList_t & el, boost::function<bool () > pred); 
-
+    
+    void setTime(uint64_t t); 
+    void setTimeout(uint64_t t); 
   private:
     
     const eventtxlist_sender_t  eventsender_; 
@@ -39,8 +51,11 @@ namespace somadspio {
     
     queue_t queue_; 
     bool ispending_; 
-    
-    
+
+    uint64_t timeout_; 
+    uint64_t timenow_; 
+    uint64_t sendtime_; 
+
   }; 
 
 

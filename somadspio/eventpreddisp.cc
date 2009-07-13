@@ -7,7 +7,10 @@ namespace somadspio {
 
   EventPredicateDispatch::EventPredicateDispatch( eventtxlist_sender_t   sender) :
     eventsender_(sender), 
-    ispending_(false)
+    ispending_(false), 
+    timeout_(0), 
+    timenow_(0), 
+    sendtime_(0)
   {
 
   }
@@ -23,24 +26,50 @@ namespace somadspio {
     ispending_ = false; 
   }
   
+  void EventPredicateDispatch::setTimeout(uint64_t timeout)
+  {
+    timeout_ = timeout; 
+
+  }
+
+  void EventPredicateDispatch::setTime(uint64_t t)
+  {
+    timenow_ = t; 
+
+  }
+
   bool EventPredicateDispatch::checkPred()
   {
+    std::cout << " The time is " << timenow_ << std::endl; 
+    //std::cout << ispending_ << " " << queue_.size() << std::endl; 
     if (ispending_) {
       if (queue_.front().second() ) {
-	std::cout << "Predicate is true" << std::endl; 
+	//std::cout << "Predicate is true" << std::endl; 
 	// predicate is true!
 	queue_.pop_front(); 	
 	ispending_ = false; 
 	return true; 
       } else {
-	std::cout << "predicate not yet true "
-		  << queue_.size() << std::endl; 
-
+	// check timeout 
+	if (timeout_> 0) {
+	  if (timenow_ > (sendtime_ + timeout_)) { 
+	    std::cerr << "timenow_ = " << timenow_; 
+	    std::cerr << " sendtime_ = " << sendtime_; 
+	    std::cerr << "TIMEOUT: Abandoning event tx" << std::endl; 
+	    queue_.pop_front(); 
+	    ispending_ = false; 
+	    return true; 
+	    
+	  }
+	}
       }
     } else { 
       if (!queue_.empty()) {
 	// send the thing
+	std::cout << "sending the event " << queue_.front().first << std::endl; 
 	eventsender_(queue_.front().first); 
+	sendtime_ = timenow_; 
+
 	ispending_ = true; 
       }
     }
