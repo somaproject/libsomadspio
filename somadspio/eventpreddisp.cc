@@ -1,5 +1,5 @@
-#include "eventpreddisp.h"
-
+#include <somadspio/eventpreddisp.h>
+#include <somadspio/logging.h>
 
 namespace somadspio {
 
@@ -28,6 +28,8 @@ namespace somadspio {
   
   void EventPredicateDispatch::setTimeout(uint64_t timeout)
   {
+    DSPIOL_(debug) << "EventPredicateDispatch: timeout set = " << timeout; 
+
     timeout_ = timeout; 
 
   }
@@ -45,7 +47,7 @@ namespace somadspio {
   {
     if (ispending_) {
       if (queue_.front().second() ) {
-	std::cout << "Predicate is true" << std::endl; 
+	DSPIOL_(debug) << "EventPredDispatch: Predicate is true"; 
 	// predicate is true!
 	queue_.pop_front(); 	
 	ispending_ = false; 
@@ -54,9 +56,8 @@ namespace somadspio {
 	// check timeout 
 	if (timeout_> 0) {
 	  if (timenow_ > (sendtime_ + timeout_)) { 
-	    std::cerr << "timenow_ = " << timenow_; 
-	    std::cerr << " sendtime_ = " << sendtime_; 
-	    std::cerr << "TIMEOUT: Abandoning event tx" << std::endl; 
+	    DSPIOL_(warning) << "EventPredDispatch: timeout expired, abandoning events"; 
+// 	    << boost::lexical_cast<std::string>(queue_.front().first); 
 	    queue_.pop_front(); 
 	    ispending_ = false; 
 	    return true; 
@@ -67,7 +68,7 @@ namespace somadspio {
     } else { 
       if (!queue_.empty()) {
 	// send the thing
-	std::cout << "sending the event " << queue_.front().first << std::endl; 
+	DSPIOL_(debug) << "sending the events"; //  << queue_.front().first; 
 	eventsender_(queue_.front().first); 
 	sendtime_ = timenow_; 
 

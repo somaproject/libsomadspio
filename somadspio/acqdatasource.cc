@@ -2,9 +2,10 @@
 #include <boost/spirit/home/phoenix/function/function.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
-#include "acqdatasource.h"
-#include "eventcodec.h"
-#include "dspcontrol.h"
+#include <somadspio/acqdatasource.h>
+#include <somadspio/eventcodec.h>
+#include <somadspio/dspcontrol.h>
+#include <somadspio/logging.h>
 
 namespace somadspio { 
   namespace ads =  codec::AcqDataSource; 
@@ -22,6 +23,7 @@ namespace somadspio {
       hpfens_[i] = false; 
     }
     chansel_ = 0; 
+    DSPIOL_(info) << "AcqDataSource: sending initialization query set"; 
 
     // send queries
     sn::EventTX_t etx = ads::queryLinkStatus(); 
@@ -76,6 +78,9 @@ namespace somadspio {
     case ads::LINKSTATUS: 
       {
 	bool linkstatus = ads::linkStatus(event); 
+	DSPIOL_(info) << "AcqDataSource: received link status =  "
+		 << linkstatus; 
+
 	if (linkStatus_ != linkstatus) {
 	  linkStatus_ = linkstatus; 
 	  linkStatusSignal_.emit(linkStatus_); 
@@ -86,6 +91,9 @@ namespace somadspio {
     case ads::MODE:
       {
 	int mode = ads::mode(event); 
+	DSPIOL_(info) << "AcqDataSource: received mode update, mode =" 
+		 << mode; 	  
+
 	if (mode_ != mode) {
 	  mode_ = mode; 
 	  modeSignal_.emit(mode); 
@@ -97,8 +105,13 @@ namespace somadspio {
       {
 	ads::changain_t gain = ads::changeGain(event); 
 	if (gain.first > CHANCNT) {
-	  throw std::runtime_error("received channel gain event with incorrect channel"); 
+	  DSPIOL_(error) << "AcqDataSource: received channel gain event with incorrect channel,"
+		    << gain.first; 
 	}
+	
+	DSPIOL_(info) << "AcqDataSource: received gain for chan "
+		 << gain.first << " = " << gain.second; 
+
 	if (gains_[gain.first] != gain.second) {
 	  gains_[gain.first] = gain.second; 
 	  gainSignal_.emit(gain.first, gain.second); 
@@ -110,8 +123,13 @@ namespace somadspio {
       {
 	ads::chanhpf_t hpf = ads::changeHPF(event); 
 	if (hpf.first > CHANCNT) {
-	  throw std::runtime_error("received channel hpf event with incorrect channel"); 
+	  DSPIOL_(error) << "AcqDataSource:: received channel hpf event with incorrect channel"
+		    << hpf.first; 
 	}
+
+	DSPIOL_(info) << "AcqDataSource: received hpf for chan " 
+		 << hpf.first << " hpen = " << hpf.second; 
+
 	if (hpfens_[hpf.first] != hpf.second) {
 	  hpfens_[hpf.first] = hpf.second; 
 	  hpfenSignal_.emit(hpf.first, hpf.second); 
@@ -122,6 +140,10 @@ namespace somadspio {
     case ads::CHANSEL:
       {
 	int chan = ads::chanSel(event); 
+
+	DSPIOL_(info) << "AcqDataSource: received chan sel, new chan ="
+		 << chan;  
+	
 	if (chansel_ != chan) {
 	  chansel_ = chan; 
 	  chanselSignal_.emit(chan); 
@@ -132,6 +154,10 @@ namespace somadspio {
     case ads::CHANRANGEMIN:
       {
 	ads::chanrange_t range = ads::chanRangeMin(event); 
+
+	DSPIOL_(info) << "AcqDataSource: received updated range min for chan " 
+		 << range.first << " = " << range.second; 
+	
 	if (ranges_[range.first].first != range.second) {
 	  ranges_[range.first].first = range.second; 
 	  rangeSignal_.emit(range.first, ranges_[range.first]); 
@@ -142,6 +168,10 @@ namespace somadspio {
     case ads::CHANRANGEMAX:
       {
 	ads::chanrange_t range = ads::chanRangeMax(event); 
+
+	DSPIOL_(info) << "AcqDataSource: received updated range max for chan " 
+		 << range.first << " = " << range.second; 
+	
 	if (ranges_[range.first].second != range.second) {
 	  ranges_[range.first].second = range.second; 
 	  rangeSignal_.emit(range.first, ranges_[range.first]); 
@@ -150,6 +180,7 @@ namespace somadspio {
       break; 
 
     default:
+      DSPIOL_(error)  << "AcqDataSource: Unknown "; 
       // FIXME Add the rest here!!!
       break;
     }

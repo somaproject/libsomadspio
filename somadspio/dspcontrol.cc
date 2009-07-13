@@ -1,6 +1,7 @@
 #include <somadspio/dspcontrol.h>
 #include <somadspio/acqdatasource.h>
-
+#include <somadspio/logging.h>
+#include <boost/lexical_cast.hpp>
 
 namespace somadspio {
   using namespace somanetwork; 
@@ -15,16 +16,26 @@ namespace somadspio {
     wavesink(*this)
   {
     preddisp_.setTimeout(timeout); 
+    DSPIOL_(info) << "StateProxy: constructing for data source = "
+	     << dsrc << " with timeout = " << timeout; 
+
   }
 
   void StateProxy::setTime(uint64_t t)
   {
     preddisp_.setTime(t); 
+    DSPIOL_(debug) << "StateProxy: setTime time = " 
+	      << t; 
 
   }
 
   void StateProxy::newEvent(const Event_t & event) {
     // FIXME: WARNING LINEAR TIME
+    using namespace somanetwork; 
+    DSPIOL_(debug) << "StateProxy: new event ";
+    boost::lexical_cast<std::string>(event); 
+
+
     acqdatasrc.newEvent(event); 
     tspikesink.newEvent(event); 
     wavesink.newEvent(event); 
@@ -40,6 +51,11 @@ namespace somadspio {
 
   void StateProxy::submit(const sn::EventTXList_t & el, boost::function<bool () > pred) 
   {
+    using namespace somanetwork; 
+
+    DSPIOL_(debug) << "StateProxy: submitting event tx "; 
+    //boost::lexical_cast<std::string>(el); 
+
     preddisp_.submit(el, pred); 
   }
 

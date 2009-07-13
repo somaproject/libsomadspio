@@ -5,7 +5,9 @@ set(dspiolib_SRCS
   tspikesink.cc
   wavesink.cc
   eventcodec.cc
-  eventpreddisp.cc )
+  eventpreddisp.cc
+  logging.cc
+ )
 
 set(somadspio_HEADERS
   dspcontrol.h eventcodec.h const.h types.h

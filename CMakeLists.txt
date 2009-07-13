@@ -25,6 +25,7 @@ ENABLE_TESTING()
 
 include_directories(.)
 include_directories(ext-dspboard/src)
+include_directories(logging-ext/boost)
 
 
 link_directories(

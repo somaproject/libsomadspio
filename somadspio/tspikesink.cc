@@ -1,6 +1,7 @@
 #include <somadspio/tspikesink.h>
 #include <somadspio/eventcodec.h>
 #include <somadspio/dspcontrol.h>
+#include <somadspio/logging.h>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
@@ -37,6 +38,9 @@ namespace somadspio {
     case tspike::THRESHOLD:
       {
 	tspike::chanthold_t thold = tspike::changeThreshold(event); 
+	DSPIOL_(info) << "TSpikeSink: received updated threshold for chan "
+		 << thold.first << ", value=" << thold.second; 
+
 	if (tholds_[thold.first] != thold.second) {
 	  tholds_[thold.first] = thold.second; 
 	  tholdSignal_.emit(thold.first, thold.second); 
@@ -47,6 +51,9 @@ namespace somadspio {
     case tspike::FILTERID:
       {
 	tspike::chanfiltid_t filtid = tspike::changeFilterID(event); 
+	DSPIOL_(info) << "TSpikeSink: received updated filterid for chan "
+		 << filtid.first << ", value=" << filtid.second; 
+
 	if (filterids_[filtid.first] != filtid.second) {
 	  filterids_[filtid.first] = filtid.second; 
 	  filterIDSignal_.emit(filtid.first, filtid.second); 
@@ -71,6 +78,10 @@ namespace somadspio {
     ct.second = thold; 
     sn::EventTX_t etx = tspike::changeThreshold(ct); 
     parent_.setETXDest(etx); 
+
+    DSPIOL_(info) << "TSpikeSink: setting threshold for chan "
+	     << chan << ", value=" << thold; 
+
     parent_.submit(createList(etx), ref(tholds_[chan]) == thold); 
 
   }
@@ -92,6 +103,10 @@ namespace somadspio {
     cfid.second = filterID; 
     sn::EventTX_t etx = tspike::changeFilterID(cfid); 
     parent_.setETXDest(etx); 
+
+    DSPIOL_(info) << "TSpikeSink: setting FilterID for chan "
+	     << chan << ", value=" << filterID ;
+
     parent_.submit(createList(etx), ref(filterids_[chan]) == filterID); 
 
   }
