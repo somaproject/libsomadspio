@@ -35,16 +35,17 @@ namespace somadspio {
   void EventPredicateDispatch::setTime(uint64_t t)
   {
     timenow_ = t; 
-
+    if (timeout_ > 0) {
+      checkPred(); 
+      
+    }
   }
 
   bool EventPredicateDispatch::checkPred()
   {
-    std::cout << " The time is " << timenow_ << std::endl; 
-    //std::cout << ispending_ << " " << queue_.size() << std::endl; 
     if (ispending_) {
       if (queue_.front().second() ) {
-	//std::cout << "Predicate is true" << std::endl; 
+	std::cout << "Predicate is true" << std::endl; 
 	// predicate is true!
 	queue_.pop_front(); 	
 	ispending_ = false; 
