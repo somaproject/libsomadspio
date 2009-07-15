@@ -65,6 +65,7 @@ namespace somadspio {
 	CHANSEL = 4, 
 	CHANRANGEMIN = 5, 
 	CHANRANGEMAX = 6
+
       };
       PARAMETERS whichParam(const Event_t &); 
       
