@@ -39,10 +39,10 @@ RM = /usr/local/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/local/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jonas/soma/gitmigrate/hardware/dspboard/iolib
+CMAKE_SOURCE_DIR = /home/jonas/soma/software/libsomadspio
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jonas/soma/gitmigrate/hardware/dspboard/iolib
+CMAKE_BINARY_DIR = /home/jonas/soma/software/libsomadspio
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -120,9 +120,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jonas/soma/gitmigrate/hardware/dspboard/iolib/CMakeFiles /home/jonas/soma/gitmigrate/hardware/dspboard/iolib/CMakeFiles/progress.make
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jonas/soma/software/libsomadspio/CMakeFiles /home/jonas/soma/software/libsomadspio/CMakeFiles/progress.make
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jonas/soma/gitmigrate/hardware/dspboard/iolib/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jonas/soma/software/libsomadspio/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -163,6 +163,19 @@ somadspio/fast:
 .PHONY : somadspio/fast
 
 #=============================================================================
+# Target rules for targets named somadspio_test
+
+# Build rule for target.
+somadspio_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 somadspio_test
+.PHONY : somadspio_test
+
+# fast build rule for target.
+somadspio_test/fast:
+	$(MAKE) -f somadspio/CMakeFiles/somadspio_test.dir/build.make somadspio/CMakeFiles/somadspio_test.dir/build
+.PHONY : somadspio_test/fast
+
+#=============================================================================
 # Target rules for targets named mockdsp
 
 # Build rule for target.
@@ -176,6 +189,19 @@ mockdsp/fast:
 .PHONY : mockdsp/fast
 
 #=============================================================================
+# Target rules for targets named runtest
+
+# Build rule for target.
+runtest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 runtest
+.PHONY : runtest
+
+# fast build rule for target.
+runtest/fast:
+	$(MAKE) -f tests/CMakeFiles/runtest.dir/build.make tests/CMakeFiles/runtest.dir/build
+.PHONY : runtest/fast
+
+#=============================================================================
 # Target rules for targets named test_acqdatasource
 
 # Build rule for target.
@@ -187,6 +213,19 @@ test_acqdatasource: cmake_check_build_system
 test_acqdatasource/fast:
 	$(MAKE) -f tests/CMakeFiles/test_acqdatasource.dir/build.make tests/CMakeFiles/test_acqdatasource.dir/build
 .PHONY : test_acqdatasource/fast
+
+#=============================================================================
+# Target rules for targets named test_eventdispatch
+
+# Build rule for target.
+test_eventdispatch: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_eventdispatch
+.PHONY : test_eventdispatch
+
+# fast build rule for target.
+test_eventdispatch/fast:
+	$(MAKE) -f tests/CMakeFiles/test_eventdispatch.dir/build.make tests/CMakeFiles/test_eventdispatch.dir/build
+.PHONY : test_eventdispatch/fast
 
 #=============================================================================
 # Target rules for targets named test_simple
@@ -215,8 +254,11 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... somadspio"
+	@echo "... somadspio_test"
 	@echo "... mockdsp"
+	@echo "... runtest"
 	@echo "... test_acqdatasource"
+	@echo "... test_eventdispatch"
 	@echo "... test_simple"
 .PHONY : help
 

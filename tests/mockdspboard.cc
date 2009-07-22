@@ -21,10 +21,10 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   config(DSPA, dsrc_, esrc_), 
   ed(config.getDSPPos()), 
   eventtx(), 
-  acqserial(true), 
+  acqserial(false), 
   bm(), 
   eep(&ed, &eventtx, &timer, &bm, config.getEventDevice()), 
-  mainloop(new RawMainLoop)
+  mainloop(new SomaMainLoop)
   //  sp(dsrc_, sigc::mem_fun(*this, &MockDSPBoard::sendEvents)))
 {
   timer.setTime(0); 
@@ -67,6 +67,12 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
     ed.parseECycleBuffer(buf); 
     //delete[] buf; fIXME WE SHOULD DELETE THESE AT SOME POINT
   }
+}
+
+void MockDSPBoard::addSamples(std::vector<int16_t> samples)
+{
+  acqserial.appendSamples(samples); 
+
 }
 
 void MockDSPBoard::runloop()

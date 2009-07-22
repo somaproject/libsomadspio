@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <mainloops/rawmainloop.h>
+#include <mainloops/somamainloop.h>
 #include <dspfixedconfig.h>
 #include <event.h>
 #include <somanetwork/eventtx.h>
@@ -28,6 +29,7 @@ public:
   MockDSPBoard(char dsrc, dsp::eventsource_t esrc); 
 
   void setEventCallback(sigc::slot<void, somanetwork::Event_t> eventcb); 
+  void addSamples(std::vector<int16_t> samples);
   
   char dsrc_; 
   dsp::eventsource_t esrc_; 
@@ -43,7 +45,7 @@ public:
   Benchmark bm;
  
   EventEchoProc eep; 
-  RawMainLoop  * mainloop; 
+  SomaMainLoop  * mainloop; 
 
   void runloop(); 
   void sendEvents(const somanetwork::EventTXList_t & etxl); 

@@ -41,6 +41,7 @@ add_library(mockdsp
   ${DSPSRCHWDIR}/hw/eventtx.cc 
   ${DSPSRCHWDIR}/hw/acqserial.cc 
   ${DSPSRCDIR}/sinks/tspikesink.cc 
+  ${DSPSRCDIR}/sinks/wavesink.cc 
   ${DSPSRCHWDIR}/filter.cc 
   ${DSPSRCDIR}/filterlinks/availablefirs.cc 
   ${DSPSRCDIR}/mainloops/rawmainloop.cc 
