@@ -150,6 +150,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named mockdsp
+
+# Build rule for target.
+mockdsp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mockdsp
+.PHONY : mockdsp
+
+# fast build rule for target.
+mockdsp/fast:
+	$(MAKE) -f somadspio/CMakeFiles/mockdsp.dir/build.make somadspio/CMakeFiles/mockdsp.dir/build
+.PHONY : mockdsp/fast
+
+#=============================================================================
 # Target rules for targets named somadspio
 
 # Build rule for target.
@@ -174,19 +187,6 @@ somadspio_test: cmake_check_build_system
 somadspio_test/fast:
 	$(MAKE) -f somadspio/CMakeFiles/somadspio_test.dir/build.make somadspio/CMakeFiles/somadspio_test.dir/build
 .PHONY : somadspio_test/fast
-
-#=============================================================================
-# Target rules for targets named mockdsp
-
-# Build rule for target.
-mockdsp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mockdsp
-.PHONY : mockdsp
-
-# fast build rule for target.
-mockdsp/fast:
-	$(MAKE) -f tests/CMakeFiles/mockdsp.dir/build.make tests/CMakeFiles/mockdsp.dir/build
-.PHONY : mockdsp/fast
 
 #=============================================================================
 # Target rules for targets named runtest
@@ -253,9 +253,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... mockdsp"
 	@echo "... somadspio"
 	@echo "... somadspio_test"
-	@echo "... mockdsp"
 	@echo "... runtest"
 	@echo "... test_acqdatasource"
 	@echo "... test_eventdispatch"

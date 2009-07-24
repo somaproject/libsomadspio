@@ -6,10 +6,12 @@
 #include <list> 
 
 
-#include "mockdspboard.h"
 #include <somadspio/dspcontrol.h>
+#include <somadspio/mockdspboard.h>
 
 BOOST_AUTO_TEST_SUITE(test_acqdatasource); 
+
+using namespace somadspio::mock; 
 
 BOOST_AUTO_TEST_CASE(gainset_test)
 {
@@ -18,7 +20,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
   */ 
 
-  MockDSPBoard dspboard(0, 8); 
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						    &MockDSPBoard::sendEvents), 0); 
@@ -53,7 +55,7 @@ BOOST_AUTO_TEST_CASE(gainset_test_fast)
 
   */ 
 
-  MockDSPBoard dspboard(0, 8); 
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						    &MockDSPBoard::sendEvents), 0); 
@@ -92,7 +94,7 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
 
   */ 
 
-  MockDSPBoard dspboard(0, 8); 
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						    &MockDSPBoard::sendEvents), 0); 
@@ -123,7 +125,7 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
 
   */ 
 
-  MockDSPBoard dspboard(0, 8); 
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial.linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						    &MockDSPBoard::sendEvents), 0); 

@@ -1,5 +1,5 @@
-#ifndef MOCKDSPBOARD_H
-#define MOCKDSPBOARD_H
+#ifndef DSP_IOLIB_MOCKDSPBOARD_H
+#define DSP_IOLIB_MOCKDSPBOARD_H
 
 #include <filterio.h>
 #include <eventdispatch.h>
@@ -18,7 +18,12 @@
 #include <echoproc.h>
 #include <systemtimer.h>
 
+
+  
 class SomaMainLoop; 
+
+namespace somadspio { namespace mock { 
+  
 
 class MockDSPBoard; 
 void dspboard_run(MockDSPBoard & dspboard, int iters); 
@@ -55,4 +60,6 @@ public:
 
 }; 
 
+  }
+}
 #endif // MOCKDSPBOARD_H

@@ -5,6 +5,7 @@
 #include "eventutil.h" 
 #include <mainloops/somamainloop.h>
 
+namespace somadspio { namespace mock { 
 
 void dspboard_run(MockDSPBoard & dspboard, int iters) {
   for (int i = 0; i < iters; i++) {
@@ -98,3 +99,6 @@ void MockDSPBoard::runloop()
     ed.dispatchEvents(); 
   }
 }
+
+  
+  }}
