@@ -6,8 +6,9 @@
 #include <list> 
 
 
-#include "mockdspboard.h"
+#include <somadspio/mockdspboard.h>
 #include <somadspio/dspcontrol.h>
+#include <ext-dspboard/src/host/hw/acqserial.h>
 
 
 BOOST_AUTO_TEST_SUITE(test); 
@@ -43,10 +44,10 @@ BOOST_AUTO_TEST_CASE(simpletest)
     if gain, etc. information gets propagated to the proxy. 
   */
 
-  MockDSPBoard dspboard(0, 8); 
-  dspboard.acqserial.linkUpState_ = true;
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
+  dspboard.acqserial->linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
-						    &MockDSPBoard::sendEvents), 0); 
+						    &somadspio::mock::MockDSPBoard::sendEvents), 0); 
 
   dspboard.setEventCallback(sigc::mem_fun(stateproxy,
 					  &somadspio::StateProxy::newEvent)); 

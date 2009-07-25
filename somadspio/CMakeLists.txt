@@ -20,7 +20,7 @@ include_directories(${SIGC++_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 
 
-set(DSPSRCDIR ../ext-dspboard/src)
+set(DSPSRCDIR dspboard)
 set(DSPSRCHWDIR ${DSPSRCDIR}/host)
 
 include_directories(${DSPSRCDIR})
@@ -81,3 +81,16 @@ install( TARGETS ${PROJECT_NAME} LIBRARY
 install(FILES ${somadspio_HEADERS}
   DESTINATION
   include/${PROJECT_NAME}-${LIBRARY_VERSION}/${PROJECT_NAME})
+
+# this is a horrible hack to get these to install in the 
+# correct location
+
+install(FILES dspboard/event.h dspboard/acqboardif.h dspboard/host/types.h 
+  DESTINATION
+  include/${PROJECT_NAME}-${LIBRARY_VERSION}/${PROJECT_NAME}/dspboard/)
+
+install(FILES dspboard/host/hw/acqserial.h 
+  DESTINATION
+  include/${PROJECT_NAME}-${LIBRARY_VERSION}/${PROJECT_NAME}/dspboard/)
+
+

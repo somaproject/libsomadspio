@@ -4,6 +4,12 @@ include_directories(${SIGC++_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 
 
+set(DSPSRCDIR ../ext-dspboard/src)
+set(DSPSRCHWDIR ${DSPSRCDIR}/host)
+
+include_directories(${DSPSRCDIR})
+include_directories(${DSPSRCHWDIR})
+
 link_directories(
   ${Boost_LIBRARY_DIRS}
   ${SOMADEPS_LIBRARY_DIRS}
