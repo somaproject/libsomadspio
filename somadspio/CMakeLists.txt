@@ -6,6 +6,7 @@ set(dspiolib_SRCS
   wavesink.cc
   eventcodec.cc
   eventpreddisp.cc
+  mockdspboard.cc
   logging.cc
  )
 

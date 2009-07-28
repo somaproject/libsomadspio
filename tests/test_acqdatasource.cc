@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
    for (int i =0; i < 10000; i++) {
-     std::vector<int16_t> samples(10); 
+     boost::array<int16_t, 10> samples; 
      dspboard.addSamples(samples); 
      dspboard.runloop(); 
    }
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
      stateproxy.acqdatasrc.setGain(0, gains[i]); 
 
      for (int j =0; j < 10000; j++) {
-       std::vector<int16_t> samples(10); 
+       boost::array<int16_t, 10> samples; 
        dspboard.addSamples(samples); 
        dspboard.runloop(); 
      }
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
   for (int i =0; i < 10000; i++) {
-    std::vector<int16_t> samples(10); 
+    boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
     dspboard.runloop(); 
   }
@@ -98,14 +98,14 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   for (int i = 0; i < 5; i++) {
     stateproxy.acqdatasrc.setGain(i, gains[i]); 
     for (int i =0; i < 100; i++) {
-      std::vector<int16_t> samples(10); 
+      boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
       dspboard.runloop(); 
     }
   } 
 
   for (int i =0; i < 1000000; i++) {
-    std::vector<int16_t> samples(10); 
+    boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
     dspboard.runloop(); 
   }
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
   for (int i =0; i < 10000; i++) {
-    std::vector<int16_t> samples(10); 
+    boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
     dspboard.runloop(); 
   }
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
   for (int i = 0; i < 5; i++) {
     stateproxy.acqdatasrc.setHPFen(0, hpfs[i]); 
     for (int j =0; j < 10000; j++) {
-      std::vector<int16_t> samples(10); 
+      boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
       dspboard.runloop(); 
     }
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
   for (int j =0; j < 10000; j++) {
-    std::vector<int16_t> samples(10); 
+    boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
     dspboard.runloop(); 
   }
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
   for (int i = 0; i < 5; i++) {
     stateproxy.acqdatasrc.setChanSel(i); 
     for (int j =0; j < 10000; j++) {
-      std::vector<int16_t> samples(10); 
+      boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
       dspboard.runloop(); 
     }

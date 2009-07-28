@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(simpletest)
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
   for (int i =0; i < 10000; i++) {
-    std::vector<int16_t> samples(10); 
+    boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
     dspboard.runloop(); 
 

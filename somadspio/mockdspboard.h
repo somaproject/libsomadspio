@@ -40,7 +40,7 @@ namespace somadspio { namespace mock {
       void setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb); 
       // this callback is what's used to send _out_ events
 
-      void addSamples(std::vector<int16_t> samples);
+      void addSamples(const boost::array<int16_t, 10> & samples);
 
       // send events -to- the dspboard -- not clear why we have
       // a separate EventTX_t and regular Event_t list version. 
@@ -66,7 +66,8 @@ namespace somadspio { namespace mock {
       
       std::list<dsp::EventTX_t> events; 
       sigc::slot<void, somanetwork::EventTX_t> eventcb_; 
-      
+     
+      double samplepos_; 
     }; 
     
   }
