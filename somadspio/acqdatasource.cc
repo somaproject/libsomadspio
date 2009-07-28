@@ -27,6 +27,7 @@ namespace somadspio {
 
     // send queries
     sn::EventTX_t etx = ads::queryLinkStatus(); 
+    DSPIOL_(info) << "AcqDataSource: Sending link status query";
     parent_.setETXDest(etx); 
     parent_.submit(createList(etx), val(true)); 
     

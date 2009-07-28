@@ -67,7 +67,6 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
 
 
   */ 
-
   for (somanetwork::EventTXList_t::const_iterator etx = etxl.begin(); 
        etx != etxl.end(); ++etx) { 
     // convert from network EventTX to dsp EventTX
