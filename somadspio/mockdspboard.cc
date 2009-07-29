@@ -87,6 +87,21 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
      ONLY CALL ONCE PER ECYCLE
 
   */ 
+  
+  
+  // create the empty event vector and mask vectors
+  std::vector<bool> amask, bmask, cmask, dmask; 
+  std::vector<dsp::Event_t> events; 
+  for (int i = 0; i < 80; i++) {
+    amask.push_back(false); 
+    bmask.push_back(false); 
+    cmask.push_back(false); 
+    dmask.push_back(false); 
+    
+    events.push_back(dsp::Event_t()); 
+  }
+  
+  
   for (somanetwork::EventTXList_t::const_iterator etx = etxl.begin(); 
        etx != etxl.end(); ++etx) { 
     // convert from network EventTX to dsp EventTX
@@ -96,25 +111,34 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
     for(int i = 0; i < 5; i++) {
       detx.data[i]= etx->event.data[i]; 
     }
-    
-    // send the actual event to the mock DSP
-    std::vector<bool> amask, bmask, cmask, dmask; 
-    std::vector<dsp::Event_t> events; 
-    for (int i = 0; i < 80; i++) {
-      amask.push_back(false); 
-      bmask.push_back(false); 
-      cmask.push_back(false); 
-      dmask.push_back(false); 
-      events.push_back(dsp::Event_t()); 
+
+    events[detx.src] = detx; 
+
+    if(config->getDSPPos() == DSPA) {
+      amask[detx.src] = true; 
     }
-    amask[2] = true; 
-    events[2] = detx; 
-    if(pEventBuffer_) {
-      delete pEventBuffer_; 
+
+    if(config->getDSPPos() == DSPB) {
+      bmask[detx.src] = true; 
     }
-    pEventBuffer_ = createEventBuffer(amask, bmask, cmask, dmask, events); 
-    ed->parseECycleBuffer(pEventBuffer_); 
+
+    if(config->getDSPPos() == DSPC) {
+      cmask[detx.src] = true; 
+    }
+
+    if(config->getDSPPos() == DSPD) {
+      dmask[detx.src] = true; 
+    }
+
+
   }
+  
+  if(pEventBuffer_) {
+    delete pEventBuffer_; 
+  }
+  pEventBuffer_ = createEventBuffer(amask, bmask, cmask, dmask, events); 
+  ed->parseECycleBuffer(pEventBuffer_); 
+
 }
 
 void MockDSPBoard::addSamples(const boost::array<int16_t, 10> & samples)
