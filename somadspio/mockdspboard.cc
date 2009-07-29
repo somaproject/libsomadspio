@@ -42,14 +42,30 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   acqserial(new AcqSerial(false)), 
   bm(new Benchmark()), 
   eep( new EventEchoProc(ed, eventtx, timer, bm, config->getEventDevice())), 
-  mainloop(new SomaMainLoop())
+  mainloop(new SomaMainLoop()),
+  pEventBuffer_(NULL)
   //  sp(dsrc_, sigc::mem_fun(*this, &MockDSPBoard::sendEvents)))
 {
   timer->setTime(0); 
   mainloop->setup(ed, eventtx, acqserial, timer, eep, 
 		  dataout, config); 
   acqserial->linkUpState_ = true; 
+
   
+  std::vector<bool> amask, bmask, cmask, dmask; 
+
+  std::vector<dsp::Event_t> events; 
+
+  for (int i = 0; i < 80; i++) {
+    amask.push_back(false); 
+    bmask.push_back(false); 
+    cmask.push_back(false); 
+    dmask.push_back(false); 
+    events.push_back(dsp::Event_t()); 
+  }
+
+  pEventBuffer_ = createEventBuffer(amask, bmask, cmask, dmask, events); 
+  ed->parseECycleBuffer(pEventBuffer_); 
 }
 
 void MockDSPBoard::setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb)
@@ -64,7 +80,8 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
 
      We use the EventTX so that we can construct the appropriate input
      buffer.
-
+     
+     ONLY CALL ONCE PER ECYCLE
 
   */ 
   for (somanetwork::EventTXList_t::const_iterator etx = etxl.begin(); 
@@ -89,9 +106,11 @@ void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
     }
     amask[2] = true; 
     events[2] = detx; 
-    uint16_t * buf = createEventBuffer(amask, bmask, cmask, dmask, events); 
-    ed->parseECycleBuffer(buf); 
-    delete[] buf;
+    if(pEventBuffer_) {
+      delete pEventBuffer_; 
+    }
+    pEventBuffer_ = createEventBuffer(amask, bmask, cmask, dmask, events); 
+    ed->parseECycleBuffer(pEventBuffer_); 
   }
 }
 
@@ -108,20 +127,23 @@ void MockDSPBoard::addSamples(const boost::array<int16_t, 10> & samples)
 
 void MockDSPBoard::runloop()
 {
-  std::cout << "MockDSPBoard::runloop() " << std::endl; 
   mainloop->runloop(); 
   
   if (eventtx->eventBuffer_.size() > 0) {
-    // convert 
+    /* EventTX is what the dspboard core uses to send 
+       events OUT to the backplane. Here we check
+       if the host-based version has any events to transmit, 
+       and if so, we push those out, first converting
+       them to soma network events. 
+
+    */ 
     dsp::EventTX_t etx = eventtx->eventBuffer_.front(); 
-    std::cout << "spot 1" << std::endl; 
     somanetwork::EventTX_t snetx; 
 
     for (int i = 0; i < somanetwork::ADDRBITS; i++) {
       int word = i >> 3; 
       snetx.destaddr[i] = etx.addr[word] >> (i % 8); 
     }
-    std::cout << "spot 2" << std::endl; 
 
     snetx.event.cmd = etx.event.cmd; 
     snetx.event.src = etx.event.src; 
@@ -129,16 +151,17 @@ void MockDSPBoard::runloop()
       snetx.event.data[i] = etx.event.data[i]; 
     }
     
-    std::cout << "spot 3" << std::endl; 
     eventcb_(snetx); 
     eventtx->eventBuffer_.pop_front(); 
     
   }
-  std::cout << "spot 4" << std::endl; 
+
+  // go through all the events that are pending in the output queue. 
+
   for (int i = 0; i < 10; i++) {
     ed->dispatchEvents(); 
   }
-  std::cout << "spot 5" << std::endl; 
+
 }
     
   

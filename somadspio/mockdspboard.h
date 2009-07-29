@@ -66,8 +66,8 @@ namespace somadspio { namespace mock {
       
       std::list<dsp::EventTX_t> events; 
       sigc::slot<void, somanetwork::EventTX_t> eventcb_; 
-     
-      double samplepos_; 
+
+      uint16_t * pEventBuffer_; 
     }; 
     
   }
