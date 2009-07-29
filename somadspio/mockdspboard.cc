@@ -36,7 +36,7 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   esrc_(esrc), 
   timer(new SystemTimer()), 
   dataout(new HostDataOut()), 
-  config(new DSPFixedConfig(DSPA, dsrc_, esrc_)), 
+  config(new DSPFixedConfig(DSPA, esrc_, dsrc_)), 
   ed(new EventDispatch(config->getDSPPos())), 
   eventtx(new EventTX()), 
   acqserial(new AcqSerial(false)), 
@@ -47,6 +47,9 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   //  sp(dsrc_, sigc::mem_fun(*this, &MockDSPBoard::sendEvents)))
 {
   timer->setTime(0); 
+
+  eventtx->mysrc = config->getEventDevice(); 
+
   mainloop->setup(ed, eventtx, acqserial, timer, eep, 
 		  dataout, config); 
   acqserial->linkUpState_ = true; 
@@ -76,9 +79,9 @@ void MockDSPBoard::setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> e
 void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
 {
   /* 
-     this corresponds to one eventcycle's worth of events
+     Send one ecycle's worth of events to the DSPboard
 
-     We use the EventTX so that we can construct the appropriate input
+     We use the EventTX_t so that we can construct the appropriate input
      buffer.
      
      ONLY CALL ONCE PER ECYCLE
