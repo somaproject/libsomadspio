@@ -43,7 +43,7 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   bm(new Benchmark()), 
   eep( new EventEchoProc(ed, eventtx, timer, bm, config->getEventDevice())), 
   mainloop(new SomaMainLoop()),
-  pEventBuffer_(NULL)
+  pEventBuffer_(NULL)  
   //  sp(dsrc_, sigc::mem_fun(*this, &MockDSPBoard::sendEvents)))
 {
   timer->setTime(0); 
@@ -74,6 +74,11 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
 void MockDSPBoard::setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb)
 {
   eventcb_ = eventcb; 
+}
+
+void MockDSPBoard::setDataTXCallback(sigc::slot<void, unsigned char *> datacb)
+{
+  databuffercb_ = datacb; 
 }
 
 void MockDSPBoard::sendEvents(const somanetwork::EventTXList_t & etxl)
@@ -189,8 +194,37 @@ void MockDSPBoard::runloop()
     ed->dispatchEvents(); 
   }
 
+  // and then check if there's data, and send all the pending data. 
+  for(std::vector<unsigned char* >::iterator dbiter = dataout->allbuffers.begin(); 
+      dbiter != dataout->allbuffers.end(); dbiter++) { 
+    if(databuffercb_) {
+      databuffercb_(*dbiter); 
+    }
+  }
+  dataout->allbuffers.clear(); 
 }
+
+    double MockDSPBoard::getSignalScale(int chan)
+    {
+      /* Returns volts per bit */ 
+      
+      int gaincode = acqserial->gains_[chan]; 
+      int gainval = 0;
+      switch(gaincode) {
+      case 0: gainval = 0; break; 
+      case 1: gainval = 100; break; 
+      case 2: gainval = 200; break; 
+      case 3: gainval = 500; break; 
+      case 4: gainval = 1000; break; 
+      case 5: gainval = 2000; break; 
+      case 6: gainval = 5000; break; 
+      case 7: gainval = 10000; break; 
+      default: gainval = 0; break; 
+      }
+      
+      return 2.048 / gainval / 32768; 
+    }
     
-  
-}
+    
+  }
 }

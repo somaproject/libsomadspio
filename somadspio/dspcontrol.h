@@ -47,7 +47,6 @@ namespace somadspio {
     TSpikeSink tspikesink; 
     WaveSink wavesink; 
 
-
   }; 
 
   sn::EventTXList_t createList(const sn::EventTX_t & et); 

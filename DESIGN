@@ -1,0 +1,8 @@
+This provides a roughly asynchronous callback-based interface
+for updating state and managing state. We make use of the following
+advanced Boost features: 
+
+
+boost::phoneix2: this is boost::lambda on steroids, for "closures" to
+let us evaluate if / when some condition holds true. This makes
+it easy for us to have a generic "resend" layer. 

@@ -37,7 +37,9 @@ namespace somadspio { namespace mock {
       MockDSPBoard(char dsrc, dsp::eventsource_t esrc); 
 
       // primary public interface
-      void setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb); 
+      void setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb);
+      void setDataTXCallback(sigc::slot<void, unsigned char *> cb); 
+ 
       // this callback is what's used to send _out_ events
 
       void addSamples(const boost::array<int16_t, 10> & samples);
@@ -46,6 +48,8 @@ namespace somadspio { namespace mock {
       // a separate EventTX_t and regular Event_t list version. 
       void sendEvents(const somanetwork::EventTXList_t & etxl); 
   
+      double getSignalScale(int chan); 
+
       char dsrc_; 
       dsp::eventsource_t esrc_; 
       SystemTimer * timer; 
@@ -66,6 +70,8 @@ namespace somadspio { namespace mock {
       
       std::list<dsp::EventTX_t> events; 
       sigc::slot<void, somanetwork::EventTX_t> eventcb_; 
+      sigc::slot<void, unsigned char*> databuffercb_; 
+
 
       uint16_t * pEventBuffer_; 
     }; 
