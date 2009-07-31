@@ -8,6 +8,8 @@
 
 #include <somadspio/dspcontrol.h>
 #include <somadspio/mockdspboard.h>
+#include <somadspio/logging.h>
+
 #include <ext-dspboard/src/host/hw/acqserial.h>
 
 
@@ -61,10 +63,13 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
 
      BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(0), gains[i]); 
-     BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).first, 
-		       AcqState::RANGEMIN[i]); 
-     BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0).second, 
-		       AcqState::RANGEMAX[i]); 
+     BOOST_CHECK(stateproxy.acqdatasrc.getRange(0)); 
+     if(stateproxy.acqdatasrc.getRange(0)) {
+       BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0)->first, 
+			 AcqState::RANGEMIN[i]); 
+       BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(0)->second, 
+			 AcqState::RANGEMAX[i]); 
+     }
    }
 
  }
@@ -73,6 +78,8 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 {
   /*
     try setting the gain rapidly, and seeing if we get a result
+    This tests if the event dispatch interface is properly waiting
+    for the predicate before moving on. 
 
   */ 
 
@@ -112,10 +119,13 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
   for (int i = 0; i < 5; i++) {
     BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(i), gains[i]); 
-    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i).first, 
-		      AcqState::RANGEMIN[i]); 
-    BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i).second, 
-		      AcqState::RANGEMAX[i]); 
+    BOOST_CHECK(stateproxy.acqdatasrc.getRange(i)); 
+    if ( stateproxy.acqdatasrc.getRange(i)) {
+      BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i)->first, 
+			AcqState::RANGEMIN[i]); 
+      BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getRange(i)->second, 
+			AcqState::RANGEMAX[i]); 
+    }
   }
   
 }
@@ -200,6 +210,39 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
     BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getChanSel(), i); 
   }
   
+}
+
+
+
+BOOST_AUTO_TEST_CASE(initialization_test)
+{
+  
+//   When the stateproxy is initialized, it rapidly queries the dspboard
+//     for a bunch of settings, to update its internal cache. By default,
+//     this flooding is too fast. Here we test to see if the predicate logic
+//     correctly waits for the options to be defined. 
+
+  somadspio::init_logs(boost::logging::level::debug); 
+  somadspio::mock::MockDSPBoard dspboard(0, 8); 
+  dspboard.acqserial->linkUpState_ = true;
+  somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
+						    &MockDSPBoard::sendEvents), 0); 
+  dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
+  
+  for (int j =0; j < 100000; j++) {
+    boost::array<int16_t, 10> samples; 
+    dspboard.addSamples(samples); 
+    dspboard.runloop(); 
+  }
+  
+  
+  // check if the link status update was correctly... uh, updated
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getLinkStatus(), true); 
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getMode(), 0); 
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getGain(0), 0); 
+  BOOST_CHECK_EQUAL(stateproxy.acqdatasrc.getChanSel(), 0); 
+
+    
 }
 
 

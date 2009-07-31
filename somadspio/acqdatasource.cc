@@ -10,52 +10,48 @@
 namespace somadspio { 
   namespace ads =  codec::AcqDataSource; 
   using namespace boost::phoenix;
-
+  namespace p = boost::phoenix; 
   AcqDataSource::AcqDataSource(StateProxy & parent) :
     parent_(parent)
   {
 
     // initialize to sane values
-    linkStatus_ = false; 
-    mode_  = 0; 
-    for (int i = 0; i < CHANCNT; i++) {
-      gains_[i] = 0; 
-      hpfens_[i] = false; 
-    }
-    chansel_ = 0; 
     DSPIOL_(info) << "AcqDataSource: sending initialization query set"; 
 
+    // FIXME: When link status goes down, all values should reset
+    // to uninitialized
+    
     // send queries
     sn::EventTX_t etx = ads::queryLinkStatus(); 
     DSPIOL_(info) << "AcqDataSource: Sending link status query";
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), p::ref(linkStatus_)); 
     
     etx = ads::queryMode(); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), p::ref(mode_)); 
 
     for (int i = 0; i < CHANCNT; i++) {
       etx = ads::queryGain(i); 
       parent_.setETXDest(etx); 
-      parent_.submit(createList(etx), val(true)); 
+      parent_.submit(createList(etx), p::ref(gains_[i])); 
 
       etx = ads::queryHPF(i); 
       parent_.setETXDest(etx); 
-      parent_.submit(createList(etx), val(true)); 
+      parent_.submit(createList(etx), p::ref(hpfens_[i])); 
 
       etx = ads::queryChanRangeMin(i); 
       parent_.setETXDest(etx); 
-      parent_.submit(createList(etx), val(true)); 
+      parent_.submit(createList(etx), p::ref(ranges_[i])); 
 
       etx = ads::queryChanRangeMax(i); 
       parent_.setETXDest(etx); 
-      parent_.submit(createList(etx), val(true)); 
+      parent_.submit(createList(etx), p::ref(ranges_[i])); 
     }
 
     etx = ads::queryChanSel(); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), p::ref(chansel_)); 
   
     
   }
@@ -155,28 +151,43 @@ namespace somadspio {
     case ads::CHANRANGEMIN:
       {
 	ads::chanrange_t range = ads::chanRangeMin(event); 
+	int chan = range.first; 
+	int val = range.second; 
 
 	DSPIOL_(info) << "AcqDataSource: received updated range min for chan " 
 		 << range.first << " = " << range.second; 
 	
-	if (ranges_[range.first].first != range.second) {
-	  ranges_[range.first].first = range.second; 
-	  rangeSignal_.emit(range.first, ranges_[range.first]); 
+	if( ! ranges_[chan] ) {
+	  ranges_[chan] = std::make_pair(0, 0); 
 	}
+
+	if (ranges_[chan]->first != val) {
+	  ranges_[chan]->first = val; 
+	  rangeSignal_.emit(chan, *(ranges_[chan])); 
+	}
+
       }
       break; 
 
     case ads::CHANRANGEMAX:
       {
 	ads::chanrange_t range = ads::chanRangeMax(event); 
+	int chan = range.first; 
+	int val = range.second; 
+
 
 	DSPIOL_(info) << "AcqDataSource: received updated range max for chan " 
 		 << range.first << " = " << range.second; 
 	
-	if (ranges_[range.first].second != range.second) {
-	  ranges_[range.first].second = range.second; 
-	  rangeSignal_.emit(range.first, ranges_[range.first]); 
+	if( ! ranges_[chan] ) {
+	  ranges_[chan] = std::make_pair(0, 0); 
 	}
+
+	if (ranges_[chan]->second != val) {
+	  ranges_[chan]->second = val; 
+	  rangeSignal_.emit(chan, *(ranges_[chan])); 
+	}
+
       }
       break; 
 
@@ -187,7 +198,7 @@ namespace somadspio {
     }
   }
 
-  bool AcqDataSource::getLinkStatus()
+  boost::optional<bool> AcqDataSource::getLinkStatus()
   {
     return linkStatus_; 
   }
@@ -197,7 +208,7 @@ namespace somadspio {
     return linkStatusSignal_; 
   }
   
-  int AcqDataSource::getMode()
+  boost::optional<int> AcqDataSource::getMode()
   {
     return mode_; 
   }
@@ -217,7 +228,7 @@ namespace somadspio {
   }
 
 
-  int AcqDataSource::getGain(int chan) {
+  boost::optional<int> AcqDataSource::getGain(int chan) {
     return gains_[chan]; 
 
   }
@@ -228,7 +239,7 @@ namespace somadspio {
     cg.second = gain; 
     sn::EventTX_t etx = ads::changeGain(cg); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx),  ref(gains_[chan]) == gain); 
+    parent_.submit(createList(etx),  p::ref(gains_[chan]) == gain); 
 
   }
 
@@ -238,7 +249,7 @@ namespace somadspio {
 
   }
 
-  bool AcqDataSource::getHPFen(int chan)
+  boost::optional<bool> AcqDataSource::getHPFen(int chan)
   {
     return hpfens_[chan];
   }
@@ -251,7 +262,7 @@ namespace somadspio {
 
     sn::EventTX_t etx = ads::changeHPF(hpf); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), ref(hpfens_[chan]) == bval); 
+    parent_.submit(createList(etx), p::ref(hpfens_[chan]) == bval); 
 
   }
 
@@ -260,7 +271,7 @@ namespace somadspio {
     return hpfenSignal_; 
   }
 
-  int AcqDataSource::getChanSel()
+  boost::optional<int> AcqDataSource::getChanSel()
   {
     return chansel_; 
   }
@@ -269,7 +280,7 @@ namespace somadspio {
   {
     sn::EventTX_t etx = ads::chanSel(chan); 
     parent_.setETXDest(etx); 
-    parent_.submit(createList(etx), val(true)); 
+    parent_.submit(createList(etx), p::val(true)); 
   }
 
   sigc::signal<void, int> & AcqDataSource::chansel()
@@ -278,7 +289,7 @@ namespace somadspio {
   }
   
 
-  range_t AcqDataSource::getRange(int chan) {
+  boost::optional<range_t> AcqDataSource::getRange(int chan) {
     return ranges_[chan]; 
   }
   

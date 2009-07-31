@@ -15,27 +15,27 @@ namespace somadspio {
   {
   public:
     
-    sigc::signal<void, bool> & linkStatus(); 
-    bool getLinkStatus(); 
+    sigc::signal<void, bool > & linkStatus(); 
+    boost::optional<bool> getLinkStatus(); 
     
     sigc::signal<void, int> & mode(); 
-    int getMode(); 
+    boost::optional<int> getMode(); 
     void setMode(int); 
     
     sigc::signal<void, int, int> & gain(); 
     void setGain(int chan, int gain); 
-    int getGain(int chan); 
+    boost::optional<int> getGain(int chan); 
     
     sigc::signal<void, int, bool> & hpfen(); 
-    bool getHPFen(int chan); 
+    boost::optional<bool> getHPFen(int chan); 
     void setHPFen(int chan, bool val); 
     
     sigc::signal<void, int, range_t> & range(); 
-    range_t getRange(int chan); 
+    boost::optional<range_t> getRange(int chan); 
     // there is no setter for range
     
     sigc::signal<void, int> & chansel(); 
-    int getChanSel(); 
+    boost::optional<int> getChanSel(); 
     void setChanSel(int); 
     
     bool newEvent(const sn::Event_t & );
@@ -53,12 +53,12 @@ namespace somadspio {
     sigc::signal<void, int>  chanselSignal_;
     sigc::signal<void, int, range_t> rangeSignal_; 
     
-    bool linkStatus_; 
-    int mode_; 
-    int gains_[CHANCNT]; 
-    bool hpfens_[CHANCNT]; 
-    range_t ranges_[CHANCNT]; 
-    int chansel_; 
+    boost::optional<bool> linkStatus_; 
+    boost::optional<int> mode_; 
+    boost::array<boost::optional<int>, CHANCNT> gains_; 
+    boost::array<boost::optional<bool>, CHANCNT> hpfens_; 
+    boost::array<boost::optional<range_t>, CHANCNT> ranges_; 
+    boost::optional<int> chansel_; 
     
     friend class StateProxy; 
     void parseEvent(const sn::Event_t & event); 

@@ -102,6 +102,39 @@ BOOST_AUTO_TEST_CASE(timeout)
 
 }
 
+BOOST_AUTO_TEST_CASE(boost_optional_pred)
+{
+
+  using namespace boost::phoenix;
+  using namespace boost; 
+
+  std::list<EventTXList_t> * etxl_list = new std::list<EventTXList_t>(); 
+  EventPredicateDispatch epd(sigc::bind(sigc::ptr_fun(sender_to_list),
+					etxl_list)); 
+  
+  BOOST_CHECK_EQUAL(epd.queueSize(), 0); 
+  
+  EventTX_t etx; 
+  etx.event.cmd = 0x10; 
+  boost::optional<int> queuepos; 
+
+  epd.submit(createList(etx), phoenix::ref(queuepos) ); 
+  epd.submit(createList(etx), phoenix::ref(queuepos) == 10); 
+
+  BOOST_CHECK_EQUAL(epd.queueSize(), 2); 
+
+  for (int i = 0; i < 15; i++) {
+    if (i > 5) {
+      queuepos = i; 
+    }
+    epd.checkPred(); 
+  }
+  
+  BOOST_CHECK_EQUAL(epd.queueSize(), 0); 
+  BOOST_CHECK_EQUAL(etxl_list->size(), 2); 
+
+  
+}
 
 BOOST_AUTO_TEST_SUITE_END(); 
 

@@ -10,6 +10,7 @@ namespace somadspio {
   namespace tspike = codec::TSpikeSink; 
 
   using namespace boost::phoenix;
+  namespace p = boost::phoenix; 
 
   TSpikeSink::TSpikeSink(StateProxy & sp) : 
     parent_(sp)
@@ -40,7 +41,7 @@ namespace somadspio {
 	tspike::chanthold_t thold = tspike::changeThreshold(event); 
 	DSPIOL_(info) << "TSpikeSink: received updated threshold for chan "
 		 << thold.first << ", value=" << thold.second; 
-
+	
 	if (tholds_[thold.first] != thold.second) {
 	  tholds_[thold.first] = thold.second; 
 	  tholdSignal_.emit(thold.first, thold.second); 
@@ -82,11 +83,11 @@ namespace somadspio {
     DSPIOL_(info) << "TSpikeSink: setting threshold for chan "
 	     << chan << ", value=" << thold; 
 
-    parent_.submit(createList(etx), ref(tholds_[chan]) == thold); 
+    parent_.submit(createList(etx), p::ref(tholds_[chan]) == thold); 
 
   }
 
-  int TSpikeSink::getThold(int chan)
+  boost::optional<int> TSpikeSink::getThold(int chan)
   {
     return tholds_[chan];
   }
@@ -107,11 +108,11 @@ namespace somadspio {
     DSPIOL_(info) << "TSpikeSink: setting FilterID for chan "
 	     << chan << ", value=" << filterID ;
 
-    parent_.submit(createList(etx), ref(filterids_[chan]) == filterID); 
+    parent_.submit(createList(etx), p::ref(filterids_[chan]) == filterID); 
 
   }
 
-  filterid_t TSpikeSink::getFilterID(int chan)
+  boost::optional<filterid_t> TSpikeSink::getFilterID(int chan)
   {
     return filterids_[chan];
 

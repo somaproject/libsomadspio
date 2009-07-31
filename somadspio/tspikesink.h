@@ -15,11 +15,11 @@ namespace somadspio {
     
     sigc::signal<void, int, int> & thold(); 
     void setThold(int chan, int thold); 
-    int getThold(int chan); 
+    boost::optional<int> getThold(int chan); 
     
     sigc::signal<void, int, filterid_t> & filterID(); 
     void setFilterID(int chan, filterid_t filterID); 
-    filterid_t getFilterID(int chan); 
+    boost::optional<filterid_t> getFilterID(int chan); 
     
   private:
     TSpikeSink(StateProxy & ); 
@@ -30,8 +30,8 @@ namespace somadspio {
     friend class StateProxy; 
     bool newEvent(const sn::Event_t & );
     StateProxy & parent_;
-    int32_t tholds_[CHANN]; 
-    filterid_t filterids_[CHANN]; 
+    boost::array<boost::optional<int32_t>, CHANN>  tholds_; 
+    boost::array<boost::optional<filterid_t>, CHANN> filterids_; 
     void parseEvent(const sn::Event_t & event); 
     
   }; 
