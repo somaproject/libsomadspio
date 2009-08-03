@@ -1,3 +1,11 @@
+libsomadspio0 (0.9~soma-ubuntu5) jaunty; urgency=low
+
+  * [99c413ed91bc3cf89f720f6485a013bff3a7ca96] updated debian/changelog
+  * [eb094713d36f8d2dd93bc4a2728d513c533a1e45] fixed missing build-
+    dependency in debian/control file, libsomanetwork-dev was missing
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 03 Aug 2009 11:00:03 -0400
+
 libsomadspio0 (0.9~soma-ubuntu4) jaunty; urgency=low
 
   [ Eric Jonas ]
