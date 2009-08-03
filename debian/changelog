@@ -1,3 +1,62 @@
+libsomadspio0 (0.9~soma-ubuntu4) jaunty; urgency=low
+
+  [ Eric Jonas ]
+  * [ded9c8137e372b3f197f91b820d0f555ddaf0b88] removed broken version
+    number from library name
+  * [f089494c9e41eb3253e05428ce0e9c0f8edee290] Fixed query interface.
+  * [13dd22f8592a8fcbf719e9f58caa9ba7e6705450] substantial rewrite,
+    using event dispatch closure-style need to hack on code to find bug
+  * [135464b2807b106c0d6afcbe64baf7cd5ace757d] Updates to using the new
+    interface; appears to work. Need more tests.
+  * [df4d29c212a0c9df425243bd2bc3dff0ceb0eaf1] added new headers
+  * [9f4eca38128f867310fd7d14c1920931c0fd9064] Add dispatch header
+  * [6ea7b7682581f6b90ab2b04cd6b748fe7e9c1992] Added timeout for
+    eventpreddisp
+  * [3c3011ec3726a7b3f578fd32c9bcab202e2bfed3] Added timeout
+  * [c1ae745b707c702162c0f6c13ad787833df95f5e] Correctly check predicate
+    every time time is updated.
+  * [0d9b95c059a29afa85bdd4e3f034b6ac756d886a] Added logging using boost
+    logging framework.
+  * [175ed2e6ddbf76dc0d259a7d6b13e76bb28345e3] Forgot to add logging
+    files
+  * [2868e1f1f55d3e14831f9a934bca9fa8c637c55c] now install logging.h
+    header
+  * [2a4167eb8bcd9b389aa9bb8439cb807321a97f57] Add in log-level
+    configuration
+  * [c8c209c0fc9d378fd05088247fd1a6c25e15884e] Restored event codec
+    range information
+  * [0bae3bee5d7451cffe393e8907deff5afd09302b] Mockdspboard add new
+    buffers
+  * [2625a055d6e4c23ad1d63d46a5500f99336e87a0] Added updated dependency
+    on new dspboard code
+  * [c4a45506fd97efc0c4bd8a9567de78f59b225749] Introduction of
+    "mockdspboard" as real code
+  * [725f61d0bab9ebe336a7e5dfcedceb086e0d5362] Updates to mock dsp board
+    to enable inclusion
+  * [af075c4056f1342437a69647b1e5c34780d801e5] Updates to the external
+    depenency dspboard trying to make mockdspboard easier to integrate
+    with external code
+  * [3611f068601d221a08be649e7ed8753e3aa5cbe4] Added symlink
+  * [ef3a01ab2537009fa0084bad4415f41b1ddb8bae] Changed mock interface to
+    make sense
+  * [966d22136c7e04bacc07f5965500c8f857eb0faf] Need to update
+    libsomadspio to support non-constant event buffers
+  * [62ed26cac37eb82535918da406c376463ecd8fa6] Added persistent buffer
+    for fake soma
+  * [42dc07bd12e5398a5d99387ba9423202dde14185] Dspconfig now gets
+    correct eventid
+  * [8de58515102a7933b0f35a38a3389b3cfb78ec08] Added correct device
+    dispatch code.
+  * [f51095478575bb376d8cdeaa94f094ac3a606024] Updates to design
+    dispatch
+  * [754f1c8d852c5a05471f5c4195cd77e4a56f0525] All values now use
+    boost::optional so they can be "uninitialized" Added initial "is
+    value set" predicate for initial query
+
+  [ Stuart Layton ]
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 03 Aug 2009 10:26:46 -0400
+
 libsomadspio0 (0.9~soma-ubuntu2) jaunty; urgency=low
 
   * Second build of libsomadespio
