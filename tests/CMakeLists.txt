@@ -24,6 +24,10 @@ add_executable(test_acqdatasource
   test_acqdatasource.cc
   runner.cc)
 
+add_executable(test_tspikesink
+  test_tspikesink.cc
+  runner.cc)
+
 add_executable(test_eventdispatch
   test_eventdispatch.cc
   runner.cc)
@@ -31,6 +35,7 @@ add_executable(test_eventdispatch
 set(testlist
   test_simple
   test_acqdatasource
+  test_tspikesink
   test_eventdispatch)
 
 foreach(testname ${testlist})

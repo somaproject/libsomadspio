@@ -20,6 +20,24 @@ namespace somadspio {
 	     << dsrc << " with timeout = " << timeout; 
 
   }
+  
+  StateProxy::~StateProxy()
+  {
+    if(preddisp_.queueSize() > 0) {
+      DSPIOL_(warning) << "StateProxy: warning, predicate queue still has "
+		       << preddisp_.queueSize() << " items"; 
+
+      std::list<sn::EventTXList_t> out = preddisp_.getQueueEvents(); 
+      for(std::list<sn::EventTXList_t>::iterator ei = out.begin(); 
+	  ei != out.end(); ++ei)
+	{
+	  DSPIOL_(warning) << "StateProxy: " 
+			   << *ei; 
+
+	}
+    }
+
+  }
 
   void StateProxy::setTime(uint64_t t)
   {

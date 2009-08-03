@@ -28,7 +28,8 @@ namespace somadspio {
   public:
     StateProxy(sn::datasource_t dsrc,  eventtxlist_sender_t  etgt, 
 	       uint64_t timeout); 
-    
+    ~StateProxy(); 
+
     void newEvent(const sn::Event_t & event); 
     void setTime(uint64_t t); 
     sn::datasource_t dsrc_;

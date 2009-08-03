@@ -30,14 +30,17 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
   */ 
 
+  //somadspio::init_logs(boost::logging::level::info); 
+
   somadspio::mock::MockDSPBoard dspboard(0, 8); 
   dspboard.acqserial->linkUpState_ = true;
   somadspio::StateProxy stateproxy(0, sigc::mem_fun(dspboard,
 						    &MockDSPBoard::sendEvents), 0); 
   dspboard.setEventTXCallback(boost::bind(&stateProxyCallbackAdaptor, &stateproxy, _1)); 
   
-   for (int i =0; i < 10000; i++) {
+   for (int i =0; i < 1000000; i++) {
      boost::array<int16_t, 10> samples; 
+     stateproxy.setTime(0); 
      dspboard.addSamples(samples); 
      dspboard.runloop(); 
    }
@@ -52,11 +55,12 @@ BOOST_AUTO_TEST_CASE(gainset_test)
 
 
    // now try setting the gain 
-   for (int i = 0; i < 7; i++) {
+   for (int i = 0; i < 3; i++) {
      stateproxy.acqdatasrc.setGain(0, gains[i]); 
 
-     for (int j =0; j < 10000; j++) {
+     for (int j =0; j < 100000; j++) {
        boost::array<int16_t, 10> samples; 
+       stateproxy.setTime(0); 
        dspboard.addSamples(samples); 
        dspboard.runloop(); 
      }
@@ -92,6 +96,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   for (int i =0; i < 10000; i++) {
     boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
+     stateproxy.setTime(0); 
     dspboard.runloop(); 
   }
   
@@ -107,6 +112,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
     for (int i =0; i < 100; i++) {
       boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
+     stateproxy.setTime(0); 
       dspboard.runloop(); 
     }
   } 
@@ -114,6 +120,7 @@ BOOST_AUTO_TEST_CASE(gainset_test)
   for (int i =0; i < 1000000; i++) {
     boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
+     stateproxy.setTime(0); 
     dspboard.runloop(); 
   }
 
@@ -147,6 +154,7 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
   for (int i =0; i < 10000; i++) {
     boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
+     stateproxy.setTime(0); 
     dspboard.runloop(); 
   }
   
@@ -162,6 +170,7 @@ BOOST_AUTO_TEST_CASE(hpfset_test)
     for (int j =0; j < 10000; j++) {
       boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
+     stateproxy.setTime(0); 
       dspboard.runloop(); 
     }
   
@@ -186,6 +195,7 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
   for (int j =0; j < 10000; j++) {
     boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
+    stateproxy.setTime(0); 
     dspboard.runloop(); 
   }
   
@@ -204,6 +214,7 @@ BOOST_AUTO_TEST_CASE(inputsel_test)
     for (int j =0; j < 10000; j++) {
       boost::array<int16_t, 10> samples; 
       dspboard.addSamples(samples); 
+      stateproxy.setTime(0); 
       dspboard.runloop(); 
     }
     
@@ -232,6 +243,7 @@ BOOST_AUTO_TEST_CASE(initialization_test)
   for (int j =0; j < 100000; j++) {
     boost::array<int16_t, 10> samples; 
     dspboard.addSamples(samples); 
+    stateproxy.setTime(0); 
     dspboard.runloop(); 
   }
   

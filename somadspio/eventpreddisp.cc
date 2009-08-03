@@ -37,10 +37,10 @@ namespace somadspio {
   void EventPredicateDispatch::setTime(uint64_t t)
   {
     timenow_ = t; 
-    if (timeout_ > 0) {
+    //if (timeout_ > 0) { // why were we doing this? 
       checkPred(); 
       
-    }
+      //}
   }
 
   bool EventPredicateDispatch::checkPred()
@@ -87,5 +87,19 @@ namespace somadspio {
 
   }
 
+  std::list<sn::EventTXList_t> EventPredicateDispatch::getQueueEvents()
+  {
+    std::list<sn::EventTXList_t> out;
+
+    for(queue_t::iterator qi = queue_.begin(); 
+	qi != queue_.end(); ++qi)
+      {
+
+	out.push_back(qi->first); 
+      }
+    return out; 
+
+  }
+  
 
 }

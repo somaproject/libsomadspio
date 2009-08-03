@@ -106,6 +106,22 @@ namespace somadspio {
     namespace WaveSink
     {
       using namespace somanetwork; 
+
+      EventTX_t changeDownSampFactor(uint32_t); 
+      uint32_t changeDownSampFactor(const Event_t &); 
+      EventTX_t queryDownSampFactor(); 
+
+      typedef std::pair<int, int> samprate_t; 
+      samprate_t changeSampRate(const Event_t &); 
+      EventTX_t querySampRate(); 
+      
+      typedef uint32_t filtid_t; 
+
+      EventTX_t changeFilterID(filtid_t); 
+      filtid_t changeFilterID(const Event_t & ); 
+      EventTX_t queryFilterID(); 
+
+      
       enum CMDS { 
 	QUERY = 0x46,  
 	SET = 0x47, 
@@ -113,8 +129,8 @@ namespace somadspio {
       }; 
       
       enum PARAMETERS { 
-	SAMPRATENUM = 1, 
-	SAMPRATEDEN = 2, 
+	DOWNSAMPFACTOR = 1, 
+	SAMPRATE = 2,  // read-only
 	FILTERID = 3
       }; 
       

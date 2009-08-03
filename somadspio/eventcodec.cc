@@ -280,7 +280,7 @@ chanthold_t changeThreshold(const Event_t & event)
 
 }
 
-EventTX_t queryThold(int chan)
+EventTX_t queryThreshold(int chan)
 {
   EventTX_t etx;
   etx.event.cmd = QUERY;
@@ -295,7 +295,7 @@ EventTX_t changeFilterID(chanfiltid_t cfid)
 {
   EventTX_t etx;
   etx.event.cmd = SET;
-  etx.event.data[0] = THRESHOLD;
+  etx.event.data[0] = FILTERID;
   etx.event.data[1] = cfid.first; 
   etx.event.data[2] = (cfid.second >> 16) & 0xFFFF; 
   etx.event.data[3] = cfid.second & 0xFFFF; 
@@ -317,11 +317,11 @@ chanfiltid_t changeFilterID(const Event_t & event)
 
 }
 
-EventTX_t queryFiltid(int chan)
+EventTX_t queryFilterID(int chan)
 {
   EventTX_t etx;
   etx.event.cmd = QUERY;
-  etx.event.data[0] = THRESHOLD; 
+  etx.event.data[0] = FILTERID; 
   etx.event.data[1] = chan; 
 
   return etx; 
@@ -329,5 +329,47 @@ EventTX_t queryFiltid(int chan)
 
 
 }
+
+
+namespace WaveSink
+{
+  
+
+
+EventTX_t changeFilterID(filtid_t cfid)
+{
+  EventTX_t etx;
+  etx.event.cmd = SET;
+  etx.event.data[0] = FILTERID;
+  etx.event.data[1] = 0; 
+  etx.event.data[2] = (cfid >> 16) & 0xFFFF; 
+  etx.event.data[3] = cfid & 0xFFFF; 
+  return etx; 
+
 }
+
+
+filtid_t changeFilterID(const Event_t & event)
+{
+
+  uint32_t filtid = 0; 
+  filtid = event.data[2]; 
+  filtid = (filtid << 16) | event.data[3]; 
+  return filtid; 
+
 }
+
+EventTX_t queryFilterID()
+{
+  EventTX_t etx;
+  etx.event.cmd = QUERY;
+  etx.event.data[0] = FILTERID; 
+  etx.event.data[1] = 0; 
+  return etx; 
+}
+
+
+
+}
+
+}}

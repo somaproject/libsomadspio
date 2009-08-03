@@ -43,6 +43,8 @@ namespace somadspio {
     
     void setTime(uint64_t t); 
     void setTimeout(uint64_t t); 
+    std::list<sn::EventTXList_t> getQueueEvents(); 
+
   private:
     
     const eventtxlist_sender_t  eventsender_; 

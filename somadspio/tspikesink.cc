@@ -5,7 +5,7 @@
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
-namespace somadspio { 
+namespace somadspio {
 
   namespace tspike = codec::TSpikeSink; 
 
@@ -15,8 +15,20 @@ namespace somadspio {
   TSpikeSink::TSpikeSink(StateProxy & sp) : 
     parent_(sp)
   {
+    DSPIOL_(info) << "TSpikeSink: sending initialization query set"; 
     
-
+    for (int i = 0; i < 4; i++) {
+      sn::EventTX_t etx = tspike::queryThreshold(i); 
+      parent_.setETXDest(etx); 
+      parent_.submit(createList(etx), val(true)); 
+    }
+      
+    for (int i = 0; i < 4; i++) {
+      sn::EventTX_t etx = tspike::queryFilterID(i); 
+      parent_.setETXDest(etx); 
+      parent_.submit(createList(etx), p::ref(filterids_[i])); 
+    }
+      
   }
   
   bool TSpikeSink::newEvent(const sn::Event_t & event)
@@ -39,12 +51,15 @@ namespace somadspio {
     case tspike::THRESHOLD:
       {
 	tspike::chanthold_t thold = tspike::changeThreshold(event); 
+	int chan = thold.first; 
+	int val = thold.second; 
+
 	DSPIOL_(info) << "TSpikeSink: received updated threshold for chan "
-		 << thold.first << ", value=" << thold.second; 
+		      << chan << ", value=" << val; 
 	
-	if (tholds_[thold.first] != thold.second) {
-	  tholds_[thold.first] = thold.second; 
-	  tholdSignal_.emit(thold.first, thold.second); 
+	if (tholds_[chan] != val) {
+	  tholds_[chan] = val; 
+	  tholdSignal_.emit(chan, val); 
 	}
       }
       break; 
