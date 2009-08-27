@@ -47,16 +47,20 @@ namespace somadspio { namespace mock {
       // send events -to- the dspboard -- not clear why we have
       // a separate EventTX_t and regular Event_t list version. 
       void sendEvents(const somanetwork::EventTXList_t & etxl); 
-  
+
+      // debug get out time
+      uint64_t getTime(); 
+
       double getSignalScale(int chan); 
 
       char dsrc_; 
       dsp::eventsource_t esrc_; 
-      SystemTimer * timer; 
       HostDataOut * dataout; 
       DSPFixedConfig * config; 
       
       EventDispatch * ed; 
+      SystemTimer * timer; 
+
       EventTX * eventtx; 
       
       AcqSerial * acqserial; 

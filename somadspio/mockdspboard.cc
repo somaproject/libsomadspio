@@ -34,10 +34,10 @@ void dspboard_run(MockDSPBoard & dspboard, int iters) {
 MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
   dsrc_(dsrc), 
   esrc_(esrc), 
-  timer(new SystemTimer()), 
   dataout(new HostDataOut()), 
   config(new DSPFixedConfig(DSPA, esrc_, dsrc_)), 
   ed(new EventDispatch(config->getDSPPos())), 
+  timer(new SystemTimer(ed)), 
   eventtx(new EventTX()), 
   acqserial(new AcqSerial(false)), 
   bm(new Benchmark()), 
@@ -69,6 +69,7 @@ MockDSPBoard::MockDSPBoard(char dsrc, dsp::eventsource_t esrc):
 
   pEventBuffer_ = createEventBuffer(amask, bmask, cmask, dmask, events); 
   ed->parseECycleBuffer(pEventBuffer_); 
+
 }
 
 void MockDSPBoard::setEventTXCallback(sigc::slot<void, somanetwork::EventTX_t> eventcb)
@@ -204,27 +205,35 @@ void MockDSPBoard::runloop()
   dataout->allbuffers.clear(); 
 }
 
-    double MockDSPBoard::getSignalScale(int chan)
-    {
-      /* Returns volts per bit */ 
-      
-      int gaincode = acqserial->gains_[chan]; 
-      int gainval = 0;
-      switch(gaincode) {
-      case 0: gainval = 0; break; 
-      case 1: gainval = 100; break; 
-      case 2: gainval = 200; break; 
-      case 3: gainval = 500; break; 
-      case 4: gainval = 1000; break; 
-      case 5: gainval = 2000; break; 
-      case 6: gainval = 5000; break; 
-      case 7: gainval = 10000; break; 
-      default: gainval = 0; break; 
-      }
-      
-      return 2.048 / gainval / 32768; 
-    }
-    
-    
+double MockDSPBoard::getSignalScale(int chan)
+{
+  /* Returns volts per bit */ 
+  
+  int gaincode = acqserial->gains_[chan]; 
+  int gainval = 0;
+  switch(gaincode) {
+  case 0: gainval = 0; break; 
+  case 1: gainval = 100; break; 
+  case 2: gainval = 200; break; 
+  case 3: gainval = 500; break; 
+  case 4: gainval = 1000; break; 
+  case 5: gainval = 2000; break; 
+  case 6: gainval = 5000; break; 
+  case 7: gainval = 10000; break; 
+  default: gainval = 0; break; 
   }
+  
+  return 2.048 / gainval / 32768; 
+}
+    
+    
+
+uint64_t MockDSPBoard::getTime()
+{
+  // FIXME NOT THREAD SAFE
+  return timer->getTime(); 
+}
+
+}
+
 }
