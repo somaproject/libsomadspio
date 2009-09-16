@@ -46,6 +46,7 @@ add_library(mockdsp
   ${DSPSRCDIR}/acqstatecontrol.cc 
   ${DSPSRCDIR}/acqdatasourcecontrol.cc 
   ${DSPSRCDIR}/acqdatasource.cc 
+  ${DSPSRCDIR}/audiomon.cc 
   ${DSPSRCDIR}/eventutil.cc 
   ${DSPSRCDIR}/acqboardif.cc 
   ${DSPSRCDIR}/sinks/rawsink.cc 
