@@ -32,6 +32,7 @@ add_library(mockdsp
   ${DSPSRCDIR}/systemtimer.cc 
   ${DSPSRCDIR}/benchmark.cc 
   ${DSPSRCDIR}/echoproc.cc 
+  ${DSPSRCDIR}/audiomon.cc 
   ${DSPSRCHWDIR}/hostdataout.cc 
   ${DSPSRCDIR}/eventdispatch.cc 
   ${DSPSRCHWDIR}/hw/eventtx.cc 
