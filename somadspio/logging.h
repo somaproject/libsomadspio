@@ -16,8 +16,6 @@ typedef use<
         logger_::favor::speed> somadspio_finder;
 
 
-
-
 BOOST_DECLARE_LOG_FILTER(somadspio_log_level, somadspio_finder::filter ) // holds the application log level
 BOOST_DECLARE_LOG(somadspio_l, somadspio_finder::logger)
 
