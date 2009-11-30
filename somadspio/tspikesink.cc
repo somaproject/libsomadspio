@@ -15,7 +15,7 @@ namespace somadspio {
   TSpikeSink::TSpikeSink(StateProxy & sp) : 
     parent_(sp)
   {
-    DSPIOL_(info) << "TSpikeSink: sending initialization query set"; 
+    DSPIOL_(info) << "TSpikeSink[" << (unsigned int)parent_.dsrc_ << "]: sending initialization query set"; 
     
     for (int i = 0; i < 4; i++) {
       sn::EventTX_t etx = tspike::queryThreshold(i); 
@@ -54,7 +54,7 @@ namespace somadspio {
 	int chan = thold.first; 
 	int val = thold.second; 
 
-	DSPIOL_(info) << "TSpikeSink: received updated threshold for chan "
+	DSPIOL_(info) << "TSpikeSink[" << (unsigned int)parent_.dsrc_ << "]: received updated threshold for chan "
 		      << chan << ", value=" << val; 
 	
 	if (tholds_[chan] != val) {
@@ -67,7 +67,7 @@ namespace somadspio {
     case tspike::FILTERID:
       {
 	tspike::chanfiltid_t filtid = tspike::changeFilterID(event); 
-	DSPIOL_(info) << "TSpikeSink: received updated filterid for chan "
+	DSPIOL_(info) << "TSpikeSink[" << (unsigned int)parent_.dsrc_ << "]: received updated filterid for chan "
 		 << filtid.first << ", value=" << filtid.second; 
 
 	if (filterids_[filtid.first] != filtid.second) {
@@ -95,7 +95,7 @@ namespace somadspio {
     sn::EventTX_t etx = tspike::changeThreshold(ct); 
     parent_.setETXDest(etx); 
 
-    DSPIOL_(info) << "TSpikeSink: setting threshold for chan "
+    DSPIOL_(info) << "TSpikeSink[" << (unsigned int)parent_.dsrc_ << "]: setting threshold for chan "
 	     << chan << ", value=" << thold; 
 
     parent_.submit(createList(etx), p::ref(tholds_[chan]) == thold); 
@@ -120,7 +120,7 @@ namespace somadspio {
     sn::EventTX_t etx = tspike::changeFilterID(cfid); 
     parent_.setETXDest(etx); 
 
-    DSPIOL_(info) << "TSpikeSink: setting FilterID for chan "
+    DSPIOL_(info) << "TSpikeSink[" << (unsigned int)parent_.dsrc_ << "]: setting FilterID for chan "
 	     << chan << ", value=" << filterID ;
 
     parent_.submit(createList(etx), p::ref(filterids_[chan]) == filterID); 

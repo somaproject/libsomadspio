@@ -16,14 +16,14 @@ namespace somadspio {
   {
 
     // initialize to sane values
-    DSPIOL_(info) << "AcqDataSource: sending initialization query set"; 
+    DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: sending initialization query set"; 
 
     // FIXME: When link status goes down, all values should reset
     // to uninitialized
     
     // send queries
     sn::EventTX_t etx = ads::queryLinkStatus(); 
-    DSPIOL_(info) << "AcqDataSource: Sending link status query";
+    DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: Sending link status query";
     parent_.setETXDest(etx); 
     parent_.submit(createList(etx), p::ref(linkStatus_)); 
     
@@ -75,7 +75,7 @@ namespace somadspio {
     case ads::LINKSTATUS: 
       {
 	bool linkstatus = ads::linkStatus(event); 
-	DSPIOL_(info) << "AcqDataSource: received link status =  "
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received link status =  "
 		 << linkstatus; 
 
 	if (linkStatus_ != linkstatus) {
@@ -88,7 +88,7 @@ namespace somadspio {
     case ads::MODE:
       {
 	int mode = ads::mode(event); 
-	DSPIOL_(info) << "AcqDataSource: received mode update, mode =" 
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received mode update, mode =" 
 		 << mode; 	  
 
 	if (mode_ != mode) {
@@ -102,11 +102,11 @@ namespace somadspio {
       {
 	ads::changain_t gain = ads::changeGain(event); 
 	if (gain.first > CHANCNT) {
-	  DSPIOL_(error) << "AcqDataSource: received channel gain event with incorrect channel,"
+	  DSPIOL_(error) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received channel gain event with incorrect channel,"
 		    << gain.first; 
 	}
 	
-	DSPIOL_(info) << "AcqDataSource: received gain for chan "
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received gain for chan "
 		 << gain.first << " = " << gain.second; 
 
 	if (gains_[gain.first] != gain.second) {
@@ -120,11 +120,11 @@ namespace somadspio {
       {
 	ads::chanhpf_t hpf = ads::changeHPF(event); 
 	if (hpf.first > CHANCNT) {
-	  DSPIOL_(error) << "AcqDataSource:: received channel hpf event with incorrect channel"
+	  DSPIOL_(error) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]:: received channel hpf event with incorrect channel"
 		    << hpf.first; 
 	}
 
-	DSPIOL_(info) << "AcqDataSource: received hpf for chan " 
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received hpf for chan " 
 		 << hpf.first << " hpen = " << hpf.second; 
 
 	if (hpfens_[hpf.first] != hpf.second) {
@@ -138,7 +138,7 @@ namespace somadspio {
       {
 	int chan = ads::chanSel(event); 
 
-	DSPIOL_(info) << "AcqDataSource: received chan sel, new chan ="
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received chan sel, new chan ="
 		 << chan;  
 	
 	if (chansel_ != chan) {
@@ -154,7 +154,7 @@ namespace somadspio {
 	int chan = range.first; 
 	int val = range.second; 
 
-	DSPIOL_(info) << "AcqDataSource: received updated range min for chan " 
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received updated range min for chan " 
 		 << range.first << " = " << range.second; 
 	
 	if( ! ranges_[chan] ) {
@@ -176,7 +176,7 @@ namespace somadspio {
 	int val = range.second; 
 
 
-	DSPIOL_(info) << "AcqDataSource: received updated range max for chan " 
+	DSPIOL_(info) << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: received updated range max for chan " 
 		 << range.first << " = " << range.second; 
 	
 	if( ! ranges_[chan] ) {
@@ -192,7 +192,7 @@ namespace somadspio {
       break; 
 
     default:
-      DSPIOL_(error)  << "AcqDataSource: Unknown "; 
+      DSPIOL_(error)  << "AcqDataSource[" << (unsigned int)parent_.dsrc_ << "]: Unknown "; 
       // FIXME Add the rest here!!!
       break;
     }

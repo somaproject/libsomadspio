@@ -16,15 +16,15 @@ namespace somadspio {
     wavesink(*this)
   {
     preddisp_.setTimeout(timeout); 
-    DSPIOL_(info) << "StateProxy: constructing for data source = "
-	     << dsrc << " with timeout = " << timeout; 
+    DSPIOL_(info) << "StateProxy[" << (unsigned int) dsrc_ << "] : constructing for data source = "
+		  << (unsigned int) dsrc_ << " with timeout = " << timeout; 
 
   }
   
   StateProxy::~StateProxy()
   {
     if(preddisp_.queueSize() > 0) {
-      DSPIOL_(warning) << "StateProxy: warning, predicate queue still has "
+      DSPIOL_(warning) << "StateProxy[" << (unsigned int) dsrc_ << "]: warning, predicate queue still has "
 		       << preddisp_.queueSize() << " items"; 
 
       std::list<sn::EventTXList_t> out = preddisp_.getQueueEvents(); 
@@ -42,7 +42,7 @@ namespace somadspio {
   void StateProxy::setTime(uint64_t t)
   {
     preddisp_.setTime(t); 
-    DSPIOL_(debug) << "StateProxy: setTime time = " 
+    DSPIOL_(debug) << "StateProxy[" << (unsigned int) dsrc_ << "]: setTime time = " 
 	      << t; 
 
   }
@@ -50,7 +50,7 @@ namespace somadspio {
   void StateProxy::newEvent(const Event_t & event) {
     // FIXME: WARNING LINEAR TIME
     using namespace somanetwork; 
-    DSPIOL_(debug) << "StateProxy: new event ";
+    DSPIOL_(debug) << "StateProxy[" << (unsigned int) dsrc_ << "]: new event ";
     boost::lexical_cast<std::string>(event); 
 
 
@@ -71,7 +71,7 @@ namespace somadspio {
   {
     using namespace somanetwork; 
 
-    DSPIOL_(debug) << "StateProxy: submitting event tx "; 
+    DSPIOL_(debug) << "StateProxy[" << (unsigned int) dsrc_ << "]: submitting event tx "; 
     //boost::lexical_cast<std::string>(el); 
 
     preddisp_.submit(el, pred); 
